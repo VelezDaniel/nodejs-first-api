@@ -22,20 +22,41 @@ async function specificData(req, res, next) {
     }
 };
 
-const addData = async (req, res, next) => {
-    let message;
+// const addData = async (req, res, next) => {
+//     let message;
+//     try {
+//         if(req.body.id > 0){
+//             const items = await ctrl.addData(req.body);
+//             message = 'Data save succesfully';
+//         } else {
+//             message = 'Bad request. Try Again';
+//             throw new Error({message: "Invalid ID"});
+//         }
+//         succes(req, res, message, 201);
+//     } catch (err) {
+//         next(err);
+//     }
+// };
+
+const updateData = async (req, res, next) =>{
+    // let message;
     try {
-        const items = await ctrl.addData(req.body);
-        if(req.body.id == 0){
-            message = 'Data save succesfully';
-        } else {
-            message = 'Data updated succesfully';
-        }
-        succes(req, res, message, 201);
+        const items = await ctrl.updatedData(req.body);
+        succes(req, res, items, 200);
     } catch (err) {
-        next(err);
+        error(req, res, err, 500);
     }
-};
+}
+
+const insertData = async (req, res, next) => {
+    // let message;
+    try {
+        const items = await ctrl.insertData(req.body);
+        succes(req, res, items, 200);
+    } catch (err) {
+        error(req, res, err, 500);
+    }
+}
 
 async function deleteData(req, res,) {
     try {
@@ -58,7 +79,8 @@ async function deleteDataBody(req, res, next) {
 
 router.get('/', allData);
 router.get('/:nameId/:id', specificData);
-router.post('/', addData)
+router.post('/', insertData);
+router.patch('/', updateData);
 router.delete('/:nameId/:id', deleteData);
 router.delete('/', deleteDataBody);
 

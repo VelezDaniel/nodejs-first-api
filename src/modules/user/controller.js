@@ -1,5 +1,5 @@
 // import { methods as db } from "../../database/mysql";
-const TABLE = 'usuario_registrado';
+const TABLE = 'usuario';
 export function methods(dbInyected) {
 
     let db = dbInyected;
@@ -16,8 +16,16 @@ export function methods(dbInyected) {
         return db.specificData(TABLE, nameId, id);
     }
 
-    const addData = (body) => {
-        return db.addData(TABLE, body);
+    // const addData = (body) => {
+    //     return db.addData(TABLE, body);
+    // }
+
+    const updatedData = (body) => {
+        return db.updatedData(TABLE, body);
+    }
+
+    const insertData = (body) =>{
+        return db.insertData(TABLE, body);
     }
 
     function deleteData(nameId, id) {
@@ -28,11 +36,18 @@ export function methods(dbInyected) {
         return db.deleteDataBody(TABLE, body);
     }
 
+    // const insertUser = (body) => {
+    //     return db.insertUser(TABLE, body);
+    // }
+
     return {
         allData,
         specificData,
-        addData,
+        // addData,
+        insertData,
+        updatedData,
         deleteDataBody,
-        deleteData
+        deleteData,
+        // insertUser
     }
 }

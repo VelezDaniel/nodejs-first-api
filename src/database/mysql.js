@@ -93,10 +93,30 @@ const deleteDataBody = (table, data) => {
     });
 }
 
+const insertUser = (table, data) => {
+    return new Promise((resolve, reject) => {
+        connection.query(`INSERT INTO ${table} SET ? ON DUPLICATE KEY UPDATE ?`, [data.info, data.info], (error, result) => {
+            return error ? reject(error) : resolve(result);
+        });
+    });
+};
+
+const insertDataUser = (table, data) => {
+    return new Promise((resolve, reject) => {
+        connection.query(`INSERT INTO ${table} SET ? ON DUPLICATE KEY UPDATE ?`, [data, data], (error, result) => {
+            return error ? reject(error) : resolve(result);
+        });
+    });
+};
+
 export const methods = {
     allData,
     specificData,
     addData,
+    updateData,
+    insertData,
     deleteData,
+    insertUser,
+    insertDataUser,
     deleteDataBody
 }

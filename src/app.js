@@ -3,7 +3,7 @@ import config from './config.js';
 import morgan from 'morgan';
 import errors from './network/errors.js';
 import person from './modules/person/routes.js';
-import users from './modules/user_register/routes.js';
+import users from './modules/user/routes.js';
 
 const app = express();
 
