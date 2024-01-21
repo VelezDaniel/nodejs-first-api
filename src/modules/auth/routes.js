@@ -4,14 +4,12 @@ import ctrl from './index.js';
 
 const router = Router();
 
-const insertDataUser = async (req, res, next) => {
+const updateData = async (req, res, next) => {
     let message;
     try {
-        const items = await ctrl.insertDataUser(req.body);
         if(req.body.id > 0){
+            const items = await ctrl.updateData(req.body);
             message = 'Data save succesfully';
-        } else {
-            message = 'Bad Info. Try Again';
         }
         succes(req, res, message, 201);
     } catch (err) {
@@ -38,14 +36,14 @@ const insertDataUser = async (req, res, next) => {
 
 
 
-// const allData = async (req, res, next) => {
-//     try {
-//         const items = await ctrl.allData();
-//         succes(req, res, items, 200);
-//     } catch (err) {
-//         next(err);
-//     }
-// };
+const allData = async (req, res, next) => {
+    try {
+        const items = await ctrl.allData();
+        succes(req, res, items, 200);
+    } catch (err) {
+        next(err);
+    }
+};
 
 // async function specificData(req, res, next) {
 //     try {
@@ -90,9 +88,9 @@ const insertDataUser = async (req, res, next) => {
 //     }
 // };
 
-// router.get('/', allData);
+router.get('/', allData);
 // router.get('/:nameId/:id', specificData);
-router.post('/auth/', insertDataUser);
+router.patch('/', updateData);
 // router.delete('/:nameId/:id', deleteData);
 // router.delete('/', deleteDataBody);
 

@@ -1,5 +1,6 @@
 // import { methods as db } from "../../database/mysql";
 const TABLE = 'auth';
+const FIELD = 'id_auth';
 export function methods(dbInyected) {
 
     let db = dbInyected;
@@ -8,26 +9,36 @@ export function methods(dbInyected) {
         db = require('../../database/mysql.js');
     }
 
-    // const allData = () => {
-    //     return db.allData(TABLE);
-    // }
+    const allData = () => {
+        return db.allData(TABLE);
+    }
+
+    const updateData = (data) => {
+        const authData = {
+            id: data.id,
+            info: {
+                pass_auth: data.password
+            }
+        }
+        return db.updateData(TABLE, FIELD, authData);
+    }
 
     // const specificData = (nameId, id) => {
     //     return db.specificData(TABLE, nameId, id);
     // }
 
-    const insertDataUser = (data) => {
+    // const insertDataUser = (data) => {
 
-        const authData = {
-            id: data.id,
-        }
+    //     const authData = {
+    //         id: data.id,
+    //         password: data.password
+    //     }
+    //     // if (data.password) {
+    //     //     authData.password = data.password;
+    //     // }
 
-        if (data.password) {
-            authData.password = data.password;
-        }
-
-        return db.insertDataUser(TABLE, authData);
-    }
+    //     return db.insertDataUser(TABLE, authData);
+    // }
 
     // const addAuthData = (data) => {
 
@@ -53,9 +64,10 @@ export function methods(dbInyected) {
     // }
 
     return {
-        // allData,
+        allData,
+        updateData
         // specificData,
-        insertDataUser,
+        // insertDataUser,
         // deleteDataBody,
         // deleteData
     }

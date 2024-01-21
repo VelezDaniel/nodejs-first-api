@@ -15,30 +15,30 @@ const allData = async (req, res, next) => {
 
 async function specificData(req, res, next) {
     try {
-        const items = await ctrl.specificData(req.params.nameId, req.params.id);
+        const items = await ctrl.specificData(req.params.id);
         succes(req, res, items, 200);
     } catch (err) {
         next(err);
     }
 };
 
-// const addData = async (req, res, next) => {
-//     let message;
-//     try {
-//         if(req.body.id > 0){
-//             const items = await ctrl.addData(req.body);
-//             message = 'Data save succesfully';
-//         } else {
-//             message = 'Bad request. Try Again';
-//             throw new Error({message: "Invalid ID"});
-//         }
-//         succes(req, res, message, 201);
-//     } catch (err) {
-//         next(err);
-//     }
-// };
+const addData = async (req, res, next) => {
+    let message;
+    try {
+        if(req.body.id > 0){
+            const items = await ctrl.addData(req.body);
+            message = 'Data save succesfully';
+        } else {
+            message = 'Bad request. Try Again';
+            throw new Error({message: "Invalid ID"});
+        }
+        succes(req, res, message, 201);
+    } catch (err) {
+        next(err);
+    }
+};
 
-const updateData = async (req, res, next) =>{
+const updateData = async (req, res) =>{
     // let message;
     try {
         const items = await ctrl.updatedData(req.body);
@@ -60,7 +60,7 @@ const insertData = async (req, res, next) => {
 
 async function deleteData(req, res,) {
     try {
-        const items = await ctrl.deleteData(req.params.nameId, req.params.id);
+        const items = await ctrl.deleteData(req.params.id);
         succes(req, res, items, 200);
     } catch (err) {
         error(req, res, err, 500);
@@ -78,10 +78,11 @@ async function deleteDataBody(req, res, next) {
 };
 
 router.get('/', allData);
-router.get('/:nameId/:id', specificData);
+router.get('/:id', specificData);
 router.post('/', insertData);
+router.post('/add', addData);
 router.patch('/', updateData);
-router.delete('/:nameId/:id', deleteData);
+router.delete('/:id', deleteData);
 router.delete('/', deleteDataBody);
 
 export default router;

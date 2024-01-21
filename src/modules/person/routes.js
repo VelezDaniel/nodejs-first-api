@@ -15,7 +15,7 @@ const allData = async (req, res, next) => {
 
 async function specificData(req, res, next) {
     try {
-        const items = await ctrl.specificData(req.params.nameId, req.params.id);
+        const items = await ctrl.specificData(req.params.id);
         succes(req, res, items, 200);
     } catch (err) {
         next(err);
@@ -26,7 +26,7 @@ const addData = async (req, res, next) => {
     let message;
     try {
         const items = await ctrl.addData(req.body);
-        if(req.body.id == 0){
+        if (req.body.id == 0) {
             message = 'Data save succesfully';
         } else {
             message = 'Data updated succesfully';
@@ -37,9 +37,43 @@ const addData = async (req, res, next) => {
     }
 };
 
+const updateDataNew = async (req, res, next) => {
+    let message;
+    try {
+        const items = await ctrl.updateDataNew(req.body);
+        if (req.body.id === 0 || req.body.id === undefined || req.body.id === null) {
+            throw new Error({message: "Id invalid"});
+        } else{
+            message = "Information Updated";
+            succes(req, res, message, 201);
+        }
+    } catch (err) {
+        next(err);
+    }
+}
+
+// const insertDataUser = async (req, res, next) => {
+//     try {
+//         let data = {
+//             id: data.id,
+//             info: {
+//                 identificacion: body.identity || null,
+//                 nombre: body.name || null,
+//                 apellido: body.lastName || null,
+//                 direccion: body.address || null,
+//                 celular: body.phone || null,
+//             }
+//         }
+//         const items = await ctrl.insertDataUser(data);
+//     } catch (err) {
+//         next(err);
+//     }
+// }
+
+
 async function deleteData(req, res,) {
     try {
-        const items = await ctrl.deleteData(req.params.nameId, req.params.id);
+        const items = await ctrl.deleteData(req.params.id);
         succes(req, res, items, 200);
     } catch (err) {
         error(req, res, err, 500);
@@ -57,9 +91,10 @@ async function deleteDataBody(req, res, next) {
 };
 
 router.get('/', allData);
-router.get('/:nameId/:id', specificData);
-router.post('/', addData)
-router.delete('/:nameId/:id', deleteData);
+router.get('/:id', specificData);
+router.post('/', addData);
+router.patch('/', updateDataNew);
+router.delete('/:id', deleteData);
 router.delete('/', deleteDataBody);
 
 export default router;

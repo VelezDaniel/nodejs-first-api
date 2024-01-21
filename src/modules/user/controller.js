@@ -1,10 +1,11 @@
 // import { methods as db } from "../../database/mysql";
 const TABLE = 'usuario';
+const FIELD = 'id_usuario';
 export function methods(dbInyected) {
 
     let db = dbInyected;
 
-    if(!db){
+    if (!db) {
         db = require('../../database/mysql.js');
     }
 
@@ -12,24 +13,38 @@ export function methods(dbInyected) {
         return db.allData(TABLE);
     }
 
-    const specificData = (nameId, id) => {
-        return db.specificData(TABLE, nameId, id);
+    const specificData = (id) => {
+        return db.specificData(TABLE, FIELD, id);
     }
 
-    // const addData = (body) => {
-    //     return db.addData(TABLE, body);
-    // }
+    const addData = (body) => {
+        let data = {
+            id: body.id,
+            info: {
+                ID_USUARIO: body.id,
+                NACIMIENTO: body.birth,
+                CORREO: body.email,
+                FK_ID_REGISTRO_ROL: body.registerRol
+            }
+        }
+        if (body.update === true) {
+            return db.updatedDataNew(TABLE, FIELD, data);
+        } else {
+            return db.insertData(TABLE, data);
+        }
+        // return db.addData(TABLE, data);
+    }
 
     const updatedData = (body) => {
-        return db.updatedData(TABLE, body);
+        return db.updatedData(TABLE, FIELD, body);
     }
 
-    const insertData = (body) =>{
+    const insertData = (body) => {
         return db.insertData(TABLE, body);
     }
 
-    function deleteData(nameId, id) {
-        return db.deleteData(TABLE, nameId, id);
+    function deleteData(id) {
+        return db.deleteData(TABLE, FIELD, id);
     }
 
     const deleteDataBody = (body) => {
@@ -43,7 +58,7 @@ export function methods(dbInyected) {
     return {
         allData,
         specificData,
-        // addData,
+        addData,
         insertData,
         updatedData,
         deleteDataBody,
