@@ -52,25 +52,6 @@ const updateDataNew = async (req, res, next) => {
     }
 }
 
-// const insertDataUser = async (req, res, next) => {
-//     try {
-//         let data = {
-//             id: data.id,
-//             info: {
-//                 identificacion: body.identity || null,
-//                 nombre: body.name || null,
-//                 apellido: body.lastName || null,
-//                 direccion: body.address || null,
-//                 celular: body.phone || null,
-//             }
-//         }
-//         const items = await ctrl.insertDataUser(data);
-//     } catch (err) {
-//         next(err);
-//     }
-// }
-
-
 async function deleteData(req, res,) {
     try {
         const items = await ctrl.deleteData(req.params.id);
@@ -93,7 +74,7 @@ async function deleteDataBody(req, res, next) {
 router.get('/', allData);
 router.get('/:id', specificData);
 router.post('/', addData);
-router.patch('/', updateDataNew);
+// router.patch('/', updateDataNew);
 router.delete('/:id', deleteData);
 router.delete('/', deleteDataBody);
 

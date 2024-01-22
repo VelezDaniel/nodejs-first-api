@@ -27,20 +27,20 @@ export function methods(dbInyected) {
         return db.addData(TABLE, FIELD, data);
     }
 
-    const updateDataNew = (body) => {
-        const data = {
-            id: body.id,
-            info: {
-                id_persona: body.id,
-                identificacion: body.info.identity,
-                nombre: body.info.name,
-                apellido: body.info.lastName,
-                celular: body.info.phone,
-                direccion: body.info.address
-            }
-        }
-        return db.updateDataNew(TABLE, FIELD, data);
-    }
+    // const updateDataNew = (body) => {
+    //     const data = {
+    //         id: body.id,
+    //         info: {
+    //             id_persona: body.id,
+    //             identificacion: body.info.identity,
+    //             nombre: body.info.name,
+    //             apellido: body.info.lastName,
+    //             celular: body.info.phone,
+    //             direccion: body.info.address
+    //         }
+    //     }
+    //     return db.updateDataNew(TABLE, FIELD, data);
+    // }
 
     const specificData = (id) => {
         return db.specificData(TABLE, FIELD, id);
@@ -58,8 +58,6 @@ export function methods(dbInyected) {
         allData,
         specificData,
         addData,
-        updateDataNew,
-        // insertDataUser,
         deleteDataBody,
         deleteData
     }

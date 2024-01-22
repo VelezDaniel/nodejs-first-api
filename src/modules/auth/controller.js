@@ -13,14 +13,14 @@ export function methods(dbInyected) {
         return db.allData(TABLE);
     }
 
-    const updateData = (data) => {
+    const updateDataNew = (data) => {
         const authData = {
             id: data.id,
             info: {
                 pass_auth: data.password
             }
         }
-        return db.updateData(TABLE, FIELD, authData);
+        return db.updateDataNew(TABLE, FIELD, authData);
     }
 
     // const specificData = (nameId, id) => {
@@ -65,7 +65,7 @@ export function methods(dbInyected) {
 
     return {
         allData,
-        updateData
+        updateDataNew
         // specificData,
         // insertDataUser,
         // deleteDataBody,

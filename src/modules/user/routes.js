@@ -38,25 +38,25 @@ const addData = async (req, res, next) => {
     }
 };
 
-const updateData = async (req, res) =>{
-    // let message;
-    try {
-        const items = await ctrl.updatedData(req.body);
-        succes(req, res, items, 200);
-    } catch (err) {
-        error(req, res, err, 500);
-    }
-}
+// const updateData = async (req, res) =>{
+//     // let message;
+//     try {
+//         const items = await ctrl.updatedData(req.body);
+//         succes(req, res, items, 200);
+//     } catch (err) {
+//         error(req, res, err, 500);
+//     }
+// }
 
-const insertData = async (req, res, next) => {
-    // let message;
-    try {
-        const items = await ctrl.insertData(req.body);
-        succes(req, res, items, 200);
-    } catch (err) {
-        error(req, res, err, 500);
-    }
-}
+// const insertData = async (req, res, next) => {
+//     // let message;
+//     try {
+//         const items = await ctrl.insertData(req.body);
+//         succes(req, res, items, 200);
+//     } catch (err) {
+//         error(req, res, err, 500);
+//     }
+// }
 
 async function deleteData(req, res,) {
     try {
@@ -73,15 +73,16 @@ async function deleteDataBody(req, res, next) {
         succes(req, res, 'Information deleted succesfully', 200);
     } catch (err) {
         next(err);
+        console.log(err);
         // next() -- Express fun
     }
 };
 
 router.get('/', allData);
 router.get('/:id', specificData);
-router.post('/', insertData);
-router.post('/add', addData);
-router.patch('/', updateData);
+router.post('/', addData);
+// router.post('/add', addData);
+// router.patch('/', updateData);
 router.delete('/:id', deleteData);
 router.delete('/', deleteDataBody);
 

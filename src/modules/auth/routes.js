@@ -4,11 +4,11 @@ import ctrl from './index.js';
 
 const router = Router();
 
-const updateData = async (req, res, next) => {
+const updateDataNew = async (req, res, next) => {
     let message;
     try {
         if(req.body.id > 0){
-            const items = await ctrl.updateData(req.body);
+            const items = await ctrl.updateDataNew(req.body);
             message = 'Data save succesfully';
         }
         succes(req, res, message, 201);
@@ -33,8 +33,6 @@ const updateData = async (req, res, next) => {
 //         next(err);
 //     }
 // };
-
-
 
 const allData = async (req, res, next) => {
     try {
@@ -90,7 +88,7 @@ const allData = async (req, res, next) => {
 
 router.get('/', allData);
 // router.get('/:nameId/:id', specificData);
-router.patch('/', updateData);
+router.patch('/', updateDataNew);
 // router.delete('/:nameId/:id', deleteData);
 // router.delete('/', deleteDataBody);
 

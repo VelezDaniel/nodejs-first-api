@@ -22,33 +22,34 @@ export function methods(dbInyected) {
             id: body.id,
             info: {
                 ID_USUARIO: body.id,
+                ESTADO_USUARIO: body.state,
                 NACIMIENTO: body.birth,
                 CORREO: body.email,
                 FK_ID_REGISTRO_ROL: body.registerRol
             }
         }
         if (body.update === true) {
-            return db.updatedDataNew(TABLE, FIELD, data);
+            return db.updateDataNew(TABLE, FIELD, data);
         } else {
             return db.insertData(TABLE, data);
         }
         // return db.addData(TABLE, data);
     }
 
-    const updatedData = (body) => {
-        return db.updatedData(TABLE, FIELD, body);
-    }
+    // const updatedData = (body) => {
+    //     return db.updatedData(TABLE, FIELD, body);
+    // }
 
-    const insertData = (body) => {
-        return db.insertData(TABLE, body);
-    }
+    // const insertData = (body) => {
+    //     return db.insertData(TABLE, body);
+    // }
 
     function deleteData(id) {
         return db.deleteData(TABLE, FIELD, id);
     }
 
     const deleteDataBody = (body) => {
-        return db.deleteDataBody(TABLE, body);
+        return db.deleteDataBody(TABLE, FIELD, body);
     }
 
     // const insertUser = (body) => {
@@ -59,8 +60,8 @@ export function methods(dbInyected) {
         allData,
         specificData,
         addData,
-        insertData,
-        updatedData,
+        // insertData,
+        // updatedData,
         deleteDataBody,
         deleteData,
         // insertUser
