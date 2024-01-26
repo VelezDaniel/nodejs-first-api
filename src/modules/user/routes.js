@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { succes, error } from '../../network/response.js'
 import ctrl from './index.js';
+import security from './security.js';
 
 const router = Router();
 
@@ -26,7 +27,7 @@ const addData = async (req, res, next) => {
     let message;
     try {
         if(req.body.id > 0){
-            const items = await ctrl.addData(req.body);
+            const items = await ctrl.addData(req.body, req.method);
             message = 'Data save succesfully';
         } else {
             message = 'Bad request. Try Again';
@@ -38,23 +39,35 @@ const addData = async (req, res, next) => {
     }
 };
 
-// const updateData = async (req, res) =>{
-//     // let message;
-//     try {
-//         const items = await ctrl.updatedData(req.body);
-//         succes(req, res, items, 200);
-//     } catch (err) {
-//         error(req, res, err, 500);
-//     }
-// }
-
 // const insertData = async (req, res, next) => {
-//     // let message;
+//     let message;
 //     try {
-//         const items = await ctrl.insertData(req.body);
-//         succes(req, res, items, 200);
+//         if(req.body.id === 0){
+//             const items = await ctrl.insertData(req.body);
+//             message = 'Data save succesfully';
+//         } else {
+//             message = 'Bad request. Try Again';
+//             throw new Error(message);
+//         }
+//         succes(req, res, message, 201);
 //     } catch (err) {
-//         error(req, res, err, 500);
+//         next(err);
+//     }
+// };
+
+// const updateData = async () => {
+//     let message;
+//     try {
+//         if(req.body.id > 0){
+//             const items = await ctrl.updateData(req.body);
+//             message = 'Data Updated succesfully';
+//         } else {
+//             message = 'Bad request. Try Again';
+//             throw new Error({message: message});
+//         }
+//         succes(req, res, message, 201);
+//     } catch (err) {
+//         next(err);
 //     }
 // }
 
@@ -80,11 +93,12 @@ async function deleteDataBody(req, res, next) {
 
 router.get('/', allData);
 router.get('/:id', specificData);
+// router.post('/', insertData);
 router.post('/', addData);
-// router.post('/add', addData);
-// router.patch('/', updateData);
+router.patch('/', security(), addData);
+// router.patch('/', security(), updateData);
 router.delete('/:id', deleteData);
-router.delete('/', deleteDataBody);
+router.delete('/', security, deleteDataBody);
 
 export default router;
 

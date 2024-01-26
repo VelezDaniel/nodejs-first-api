@@ -17,7 +17,21 @@ export function methods(dbInyected) {
         return db.specificData(TABLE, FIELD, id);
     }
 
-    const addData = (body) => {
+    // const updateData = (body) => {
+    //     let data = {
+    //         id: body.id,
+    //         info: {
+    //             ID_USUARIO: body.id,
+    //             ESTADO_USUARIO: body.state,
+    //             NACIMIENTO: body.birth,
+    //             CORREO: body.email,
+    //             FK_ID_REGISTRO_ROL: body.registerRol
+    //         }
+    //     }
+    //     return db.updateDataNew(TABLE, FIELD, data)
+    // }
+
+    const addData = (body, method) => {
         let data = {
             id: body.id,
             info: {
@@ -28,7 +42,7 @@ export function methods(dbInyected) {
                 FK_ID_REGISTRO_ROL: body.registerRol
             }
         }
-        if (body.update === true) {
+        if (method === 'PATCH') {
             return db.updateDataNew(TABLE, FIELD, data);
         } else {
             return db.insertData(TABLE, data);
@@ -61,7 +75,7 @@ export function methods(dbInyected) {
         specificData,
         addData,
         // insertData,
-        // updatedData,
+        // updateData,
         deleteDataBody,
         deleteData,
         // insertUser

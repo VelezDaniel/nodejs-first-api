@@ -1,6 +1,6 @@
 // import { methods as db } from "../../database/mysql";
 import bcrypt from 'bcrypt';
-import {utilities as authIndex} from "../../auth/index.js";
+import { utilities as authIndex } from "../../auth/index.js";
 const TABLE = 'auth';
 const FIELD = 'user_auth';
 export function methods(dbInyected) {
@@ -44,7 +44,7 @@ export function methods(dbInyected) {
         }
     }
 
-    const updateDataNew = async (data) => {
+    const updateDataNew = async (data, method) => {
         let pass;
         if (data.password) {
             pass = await bcrypt.hash(data.password.toString(), 5);
@@ -56,8 +56,14 @@ export function methods(dbInyected) {
                 pass_auth: pass
             }
         }
-
-        return db.updateDataNew(TABLE, FIELD, authData);
+        if (method === 'POST') {
+            const queryResult = await db.query(TABLE, FIELD, data.user);
+            if (queryResult.PASS_AUTH === '') {
+                return db.updateDataNew(TABLE, FIELD, authData);
+            } else { throw new Error('Action denied'); }
+        } else {
+            if (method === 'PATCH') {return db.updateDataNew(TABLE, FIELD, authData);}
+        }
     }
 
     // const specificData = (nameId, id) => {

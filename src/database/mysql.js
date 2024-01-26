@@ -143,18 +143,6 @@ const insertDataUser = (table, data) => {
     });
 };
 
-// ! NO SE HA PROBADO 
-// ? REQIUERE REVISIONES ############33
-// const QUERY = (table, nameId, id) => {
-//     return new Promise((resolve, reject) => {
-//         connection.query(`SELECT * FROM ${table} WHERE ${nameId}= ${id}`, (error, result) => {
-//             return error ? reject(error) : resolve(result);
-//         });
-//     });
-// }
-
-// ! NO SE HA PROBADO 
-// ? REQIUERE REVISIONES ############33
 const query = async (table, field, ask) => {
     try {
         const result = await new Promise((resolve, reject) => {

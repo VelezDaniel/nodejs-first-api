@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { succes, error } from '../../network/response.js'
+import security from '../../modules/user/security.js';
 import ctrl from './index.js';
 
 const router = Router();
@@ -8,7 +9,7 @@ const updateDataNew = async (req, res, next) => {
     let message;
     try {
         if(req.body.user > 0){
-            const items = await ctrl.updateDataNew(req.body);
+            const items = await ctrl.updateDataNew(req.body, req.method);
             message = 'Data save succesfully';
             succes(req, res, message, 201);
         } else {
@@ -100,8 +101,10 @@ async function login (req, res, next) {
 // router.get('/', allData);
 router.get('/login', login);
 router.post('/', updateDataNew);
+
+// ! PATCH no activo ( NO SE ENCUENTRA FUNCIONANDO TODAVIA)
+router.patch('/', security(), updateDataNew);
 // router.delete('/:id', deleteData);
 // router.delete('/', deleteDataBody);
 
 export default router;
-
