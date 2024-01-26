@@ -5,6 +5,9 @@ export default {
     app: {
         port: process.env.PORT || 4000,
     },
+    jwt: {
+        security: process.env.JET_SECRET || "secretPassword"
+    },
     mysql: {
         host: process.env.MYSQL_HOST || 'localhost',
         user: process.env.MYSQL_USER || 'root',

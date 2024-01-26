@@ -7,11 +7,13 @@ const router = Router();
 const updateDataNew = async (req, res, next) => {
     let message;
     try {
-        if(req.body.id > 0){
+        if(req.body.user > 0){
             const items = await ctrl.updateDataNew(req.body);
             message = 'Data save succesfully';
+            succes(req, res, message, 201);
+        } else {
+            throw new Error({message: "Information not updated"});
         }
-        succes(req, res, message, 201);
     } catch (err) {
         next(err);
     }
@@ -34,23 +36,32 @@ const updateDataNew = async (req, res, next) => {
 //     }
 // };
 
-const allData = async (req, res, next) => {
+// const allData = async (req, res, next) => {
+//     try {
+//         const items = await ctrl.allData();
+//         succes(req, res, items, 200);
+//     } catch (err) {
+//         next(err);
+//     }
+// };
+
+async function specificData(req, res, next) {
     try {
-        const items = await ctrl.allData();
+        const items = await ctrl.specificData(req.params.nameId, req.params.id);
         succes(req, res, items, 200);
     } catch (err) {
         next(err);
     }
 };
 
-// async function specificData(req, res, next) {
-//     try {
-//         const items = await ctrl.specificData(req.params.nameId, req.params.id);
-//         succes(req, res, items, 200);
-//     } catch (err) {
-//         next(err);
-//     }
-// };
+async function login (req, res, next) {
+    try {
+        const token = await ctrl.login(req.body.user, req.body.password);
+        succes(req, res, token, 200);
+    } catch (err) {
+        next(err);
+    }
+};
 
 // const addData = async (req, res, next) => {
 //     let message;
@@ -86,10 +97,10 @@ const allData = async (req, res, next) => {
 //     }
 // };
 
-router.get('/', allData);
-// router.get('/:nameId/:id', specificData);
-router.patch('/', updateDataNew);
-// router.delete('/:nameId/:id', deleteData);
+// router.get('/', allData);
+router.get('/login', login);
+router.post('/', updateDataNew);
+// router.delete('/:id', deleteData);
 // router.delete('/', deleteDataBody);
 
 export default router;

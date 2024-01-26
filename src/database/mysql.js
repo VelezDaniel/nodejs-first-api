@@ -86,7 +86,7 @@ const updateDataNew = (table, field, data) => {
         const result = connection.query(query, values, (error, result) => {
             return error ? reject(error) : resolve(result);
         });
-        console.log(result);
+        // console.log(result);
     });
 }
 
@@ -143,6 +143,32 @@ const insertDataUser = (table, data) => {
     });
 };
 
+// ! NO SE HA PROBADO 
+// ? REQIUERE REVISIONES ############33
+// const QUERY = (table, nameId, id) => {
+//     return new Promise((resolve, reject) => {
+//         connection.query(`SELECT * FROM ${table} WHERE ${nameId}= ${id}`, (error, result) => {
+//             return error ? reject(error) : resolve(result);
+//         });
+//     });
+// }
+
+// ! NO SE HA PROBADO 
+// ? REQIUERE REVISIONES ############33
+const query = async (table, field, ask) => {
+    try {
+        const result = await new Promise((resolve, reject) => {
+            connection.query(`SELECT * FROM ${table} WHERE ${field} = ?`,ask, (error, result) => {
+                return error ? reject(error) : resolve(result);
+            });
+        });
+
+        return result.length > 0 ? result[0] : null;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const methods = {
     allData,
     specificData,
@@ -153,5 +179,6 @@ export const methods = {
     deleteData,
     // insertUser,
     insertDataUser,
-    deleteDataBody
+    deleteDataBody,
+    query
 }

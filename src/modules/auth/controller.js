@@ -1,6 +1,8 @@
 // import { methods as db } from "../../database/mysql";
+import bcrypt from 'bcrypt';
+import {utilities as authIndex} from "../../auth/index.js";
 const TABLE = 'auth';
-const FIELD = 'id_auth';
+const FIELD = 'user_auth';
 export function methods(dbInyected) {
 
     let db = dbInyected;
@@ -13,13 +15,48 @@ export function methods(dbInyected) {
         return db.allData(TABLE);
     }
 
-    const updateDataNew = (data) => {
+    const login = async (user, password) => {
+        try {
+            const data = await db.query(TABLE, FIELD, user);
+
+            if (!data) {
+                throw new Error('User not found');
+            }
+
+            const PasswordMatch = await bcrypt.compare(password, data.PASS_AUTH);
+            if (PasswordMatch) {
+                return authIndex.assignToken({ ...data });
+            } else {
+                throw new Error('Invalid password');
+            }
+
+            // return bcrypt.compare(password, data.pass_auth)
+            // .then(result => {
+            //     if(result === true) {
+            //         //Generate token
+            //         assignToken({...data});
+            //     } else {
+            //         throw new Error('Invalid information');
+            //     }
+            // })
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    const updateDataNew = async (data) => {
+        let pass;
+        if (data.password) {
+            pass = await bcrypt.hash(data.password.toString(), 5);
+        }
+
         const authData = {
-            id: data.id,
+            id: data.user,
             info: {
-                pass_auth: data.password
+                pass_auth: pass
             }
         }
+
         return db.updateDataNew(TABLE, FIELD, authData);
     }
 
@@ -65,7 +102,8 @@ export function methods(dbInyected) {
 
     return {
         allData,
-        updateDataNew
+        updateDataNew,
+        login
         // specificData,
         // insertDataUser,
         // deleteDataBody,
