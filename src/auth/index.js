@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import config from "../config.js";
+import error from "../middleware/errors.js";
 
 const security = config.jwt.security;
 
@@ -15,20 +16,20 @@ const checkToken = {
     confirmToken: function(req){
         const decoded = decodeHeader(req);
 
-        // ? Para verificar que el usuario sea el unico que pueda editar sus propios datos se puede hacer una validación similar a esta: 
-        // if(decoded.id === id){
-        //     throw new Error("You can't do that");
-        // }
+        // ? Si el id es diferente al que se intenta modificar dle que corresponde el token no sera permitido 
+        if(decoded.id !== id){
+            error("You can't do that", 401);
+        }
     }
 }
 
 const getToken = (authorization) => {
     if(!authorization){
-        throw new Error("There isn't Token");
+        error("There isn't Token", 401);
     }
     
     if(authorization.indexOf('Bearer') === -1){
-        throw new Error('Invalid Format');
+        error('Invalid Format', 401);
     }
 
     let token = authorization.replace('Bearer ', '');
