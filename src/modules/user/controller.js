@@ -17,20 +17,6 @@ export function methods(dbInyected) {
         return db.specificData(TABLE, FIELD, id);
     }
 
-    // const updateData = (body) => {
-    //     let data = {
-    //         id: body.id,
-    //         info: {
-    //             ID_USUARIO: body.id,
-    //             ESTADO_USUARIO: body.state,
-    //             NACIMIENTO: body.birth,
-    //             CORREO: body.email,
-    //             FK_ID_REGISTRO_ROL: body.registerRol
-    //         }
-    //     }
-    //     return db.updateDataNew(TABLE, FIELD, data)
-    // }
-
     const addData = (body, method) => {
         let data = {
             id: body.id,
@@ -39,7 +25,7 @@ export function methods(dbInyected) {
                 ESTADO_USUARIO: body.state,
                 NACIMIENTO: body.birth,
                 CORREO: body.email,
-                FK_ID_REGISTRO_ROL: body.registerRol
+                FK_ID_REGISTRO_ROL: body.registerRole
             }
         }
         if (method === 'PATCH') {
@@ -50,14 +36,6 @@ export function methods(dbInyected) {
         // return db.addData(TABLE, data);
     }
 
-    // const updatedData = (body) => {
-    //     return db.updatedData(TABLE, FIELD, body);
-    // }
-
-    // const insertData = (body) => {
-    //     return db.insertData(TABLE, body);
-    // }
-
     function deleteData(id) {
         return db.deleteData(TABLE, FIELD, id);
     }
@@ -66,18 +44,11 @@ export function methods(dbInyected) {
         return db.deleteDataBody(TABLE, FIELD, body);
     }
 
-    // const insertUser = (body) => {
-    //     return db.insertUser(TABLE, body);
-    // }
-
     return {
         allData,
         specificData,
         addData,
-        // insertData,
-        // updateData,
         deleteDataBody,
         deleteData,
-        // insertUser
     }
 }

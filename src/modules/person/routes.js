@@ -37,21 +37,6 @@ const addData = async (req, res, next) => {
     }
 };
 
-const updateDataNew = async (req, res, next) => {
-    let message;
-    try {
-        const items = await ctrl.updateDataNew(req.body);
-        if (req.body.id === 0 || req.body.id === undefined || req.body.id === null) {
-            throw new Error({message: "Id invalid"});
-        } else{
-            message = "Information Updated";
-            succes(req, res, message, 201);
-        }
-    } catch (err) {
-        next(err);
-    }
-}
-
 async function deleteData(req, res,) {
     try {
         const items = await ctrl.deleteData(req.params.id);
@@ -74,7 +59,6 @@ async function deleteDataBody(req, res, next) {
 router.get('/', allData);
 router.get('/:id', specificData);
 router.post('/', addData);
-// router.patch('/', updateDataNew);
 router.delete('/:id', deleteData);
 router.delete('/', deleteDataBody);
 

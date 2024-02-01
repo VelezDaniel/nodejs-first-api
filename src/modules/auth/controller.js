@@ -15,6 +15,10 @@ export function methods(dbInyected) {
         return db.allData(TABLE);
     }
 
+    const specificData = (id) => {
+        return db.specificData(TABLE, FIELD, id);
+    }
+
     const login = async (user, password) => {
         try {
             const data = await db.query(TABLE, FIELD, user);
@@ -66,53 +70,10 @@ export function methods(dbInyected) {
         }
     }
 
-    // const specificData = (nameId, id) => {
-    //     return db.specificData(TABLE, nameId, id);
-    // }
-
-    // const insertDataUser = (data) => {
-
-    //     const authData = {
-    //         id: data.id,
-    //         password: data.password
-    //     }
-    //     // if (data.password) {
-    //     //     authData.password = data.password;
-    //     // }
-
-    //     return db.insertDataUser(TABLE, authData);
-    // }
-
-    // const addAuthData = (data) => {
-
-    //     const authData = {
-    //         id: data.id,
-    //     }
-
-    //     if(data.password) {
-    //         authData.password = data.password;
-    //     }
-
-    //     return db.addAuthData(TABLE, authData);
-    // }
-
-
-
-    // function deleteData(nameId, id) {
-    //     return db.deleteData(TABLE, nameId, id);
-    // }
-
-    // const deleteDataBody = (body) => {
-    //     return db.deleteDataBody(TABLE, body);
-    // }
-
     return {
         allData,
         updateDataNew,
-        login
-        // specificData,
-        // insertDataUser,
-        // deleteDataBody,
-        // deleteData
+        login,
+        specificData
     }
 }

@@ -49,29 +49,6 @@ const specificData = (table, field, id) => {
     });
 }
 
-// const updateData = (table, field, data) => {
-//     return new Promise((resolve, reject) => {
-//         connection.query(`UPDATE ${table} SET ? WHERE ?? = ?`, [data.info, field, data.id], (error, result) => {
-//             return error ? reject(error) : resolve(result);
-//         });
-//     });
-// }
-
-// ? FUNCIONA ESTE CODIGO
-// const updateDataNew = (table, field, data) => {
-//     return new Promise((resolve, reject) => {
-
-//         const query = `UPDATE ${table} SET identificacion = IFNULL(?, identificacion), nombre = IFNULL(?, nombre), apellido = IFNULL(?, apellido), direccion = IFNULL(?, direccion), celular = IFNULL(?, celular) WHERE ?? = ?`;
-
-//         const values = [data.info.identificacion, data.info.nombre, data.info.apellido, data.info.direccion, data.info.celular, field, data.id];
-
-//         const result = connection.query(query, values, (error, result) => {
-//             return error ? reject(error) : resolve(result);
-//         });
-//         console.log(result);
-//     });
-// }
-
 const updateDataNew = (table, field, data) => {
     return new Promise((resolve, reject) => {
 
@@ -125,24 +102,6 @@ const deleteDataBody = (table, field, data) => {
     });
 }
 
-// ! no se esta utilizando
-const insertUser = (table, data) => {
-    return new Promise((resolve, reject) => {
-        connection.query(`INSERT INTO ${table} SET ? ON DUPLICATE KEY UPDATE ?`, [data.info, data.info], (error, result) => {
-            return error ? reject(error) : resolve(result);
-        });
-    });
-};
-
-// ! no se esta utilizando
-const insertDataUser = (table, data) => {
-    return new Promise((resolve, reject) => {
-        connection.query(`INSERT INTO ${table} SET ? ON DUPLICATE KEY UPDATE ?`, [data.info, data.info], (error, result) => {
-            return error ? reject(error) : resolve(result);
-        });
-    });
-};
-
 const query = async (table, field, ask) => {
     try {
         const result = await new Promise((resolve, reject) => {
@@ -161,12 +120,9 @@ export const methods = {
     allData,
     specificData,
     addData,
-    // updateData,
     updateDataNew,
     insertData,
     deleteData,
-    // insertUser,
-    insertDataUser,
     deleteDataBody,
     query
 }
