@@ -1,6 +1,7 @@
-import { Router } from "express";
+import { Router, json } from "express";
 import { succes, error } from '../../network/response.js'
 import ctrl from './index.js';
+import { utilities as authIndex } from "../../auth/index.js";
 
 const router = Router();
 
@@ -26,8 +27,11 @@ const addData = async (req, res, next) => {
     let message;
     try {
         const items = await ctrl.addData(req.body);
+
         if (req.body.id == 0) {
-            message = 'Data save succesfully';
+            // const token = await authIndex.createAccessToken({id: WAIT})
+            // res.cookie("token", token);
+            message = 'Data saved succesfully';
         } else {
             message = 'Data updated succesfully';
         }

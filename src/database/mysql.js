@@ -76,10 +76,15 @@ const insertData = (table, data) => {
 }
 
 const addData = (table, field, data) => {
-    if (data && data.id == 0) {
-        return insertData(table, data);
+
+    if(data) {
+        if (data.id == 0) {
+            return insertData(table, data);
+        } else {
+            return updateDataNew(table, field, data);
+        }
     } else {
-        return updateDataNew(table, field, data);
+        throw new Error('Data not found');
     }
 }
 

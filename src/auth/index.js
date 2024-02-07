@@ -16,7 +16,7 @@ const checkToken = {
     confirmToken: function(req){
         const decoded = decodeHeader(req);
 
-        // ? Si el id es diferente al que se intenta modificar dle que corresponde el token no sera permitido 
+        // ? Si el id es diferente al que se intenta modificar del que corresponde el token no sera permitido 
         if(decoded.id !== id){
             error("You can't do that", 401);
         }
@@ -45,7 +45,24 @@ const decodeHeader = (req) => {
     return decoded;
 }
 
+const createAccessToken = (payload) =>{
+    return new Promise((resolve, reject) => {
+        jwt.sign(
+            payload,
+            security,
+            {
+                expiresIn: "1d",
+            },
+            (err, token) => {
+                if (err) reject(err)
+                resolve (token);
+            }
+        );
+    });
+}
+
 export const utilities = {
     assignToken,
-    checkToken
+    checkToken,
+    createAccessToken
 }

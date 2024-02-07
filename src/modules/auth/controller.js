@@ -33,16 +33,6 @@ export function methods(dbInyected) {
             } else {
                 throw new Error('Invalid password');
             }
-
-            // return bcrypt.compare(password, data.pass_auth)
-            // .then(result => {
-            //     if(result === true) {
-            //         //Generate token
-            //         assignToken({...data});
-            //     } else {
-            //         throw new Error('Invalid information');
-            //     }
-            // })
         } catch (error) {
             throw error;
         }
@@ -70,10 +60,42 @@ export function methods(dbInyected) {
         }
     }
 
+    // ! register unnecessary
+    // const register = async (req, res) => {
+    //     // console.log(req.body);
+    //     const {userId, name, lastName, phone, address, birth, email} = req.body;
+
+    //     try {
+    //         const userInfo = {
+    //             userId,
+    //             name,
+    //             lastName,
+    //             phone,
+    //             address,
+    //             birth,
+    //             email
+    //         }
+
+    //         await 
+
+
+    //         res.send('Registrered');
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+
+    //     // console.log(userInfo);
+
+        
+    // }
+
+    const logIn = (req, res) => res.send("LOG IN :)");
+
     return {
         allData,
         updateDataNew,
         login,
-        specificData
+        specificData,
+        logIn
     }
 }

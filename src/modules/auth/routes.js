@@ -50,9 +50,9 @@ async function deleteDataBody(req, res, next) {
 
 router.get('/login', login);
 router.post('/', updateDataNew);
-// ! PATCH no activo ( NO SE ENCUENTRA FUNCIONANDO TODAVIA)
 router.patch('/', security(), updateDataNew);
 router.get('/:id', specificData);
 router.delete('/', deleteDataBody);
+router.post('/login/user', ctrl.logIn);
 
 export default router;
