@@ -2,6 +2,7 @@
 import bcrypt from 'bcrypt';
 import { utilities as authIndex } from "../../auth/index.js";
 const TABLE = 'auth';
+const TABLE2 = 'tokens_login';
 const FIELD = 'user_auth';
 export function methods(dbInyected) {
 
@@ -29,13 +30,34 @@ export function methods(dbInyected) {
 
             const PasswordMatch = await bcrypt.compare(password, data.PASS_AUTH);
             if (PasswordMatch) {
-                return authIndex.assignToken({ ...data });
+                // return authIndex.assignToken({ ...data });
+                const token = authIndex.assignToken({ ...data });
+                const user = data.USER_AUTH;
+                const infoTk = {
+                    info: {
+                        ident_auth: user,
+                        token: token
+                    }
+                }
+                const resultSavedToken = await db.insertData(TABLE2, infoTk);
+                if (resultSavedToken) {
+                    return token;
+                } else {
+                    throw new Error('Something was wrong...');
+                }
             } else {
-                throw new Error('Invalid password');
+                throw new Error('Something was wrong TRY');
             }
         } catch (error) {
             throw error;
         }
+    }
+
+    const logout = (req, res) => {
+        res.cookie('token', "", {
+            expires: new Date(0)
+        })
+        return res.sendStatus(200);
     }
 
     const updateDataNew = async (data, method) => {
@@ -56,8 +78,12 @@ export function methods(dbInyected) {
                 return db.updateDataNew(TABLE, FIELD, authData);
             } else { throw new Error('Action denied'); }
         } else {
-            if (method === 'PATCH') {return db.updateDataNew(TABLE, FIELD, authData);}
+            if (method === 'PATCH') { return db.updateDataNew(TABLE, FIELD, authData); }
         }
+    }
+
+    const profile = (req, res) => {
+        res.send('Profile');
     }
 
     // ! register unnecessary
@@ -86,16 +112,15 @@ export function methods(dbInyected) {
 
     //     // console.log(userInfo);
 
-        
-    // }
 
-    const logIn = (req, res) => res.send("LOG IN :)");
+    // }
 
     return {
         allData,
         updateDataNew,
         login,
         specificData,
-        logIn
+        logout,
+        profile
     }
 }

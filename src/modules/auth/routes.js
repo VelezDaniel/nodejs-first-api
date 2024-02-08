@@ -1,6 +1,7 @@
-import { Router } from "express";
+import { Router, json } from "express";
 import { succes, error } from '../../network/response.js'
 import security from '../../modules/user/security.js';
+import { authRequired } from "../../middleware/validateToken.js";
 import ctrl from './index.js';
 
 const router = Router();
@@ -32,9 +33,11 @@ async function specificData(req, res, next) {
 async function login (req, res, next) {
     try {
         const token = await ctrl.login(req.body.user, req.body.password);
-        succes(req, res, token, 200);
+        res.cookie('token', token, {sameSite: 'None', secure: true});
+        // console.log(req.cookies);
+        succes(req, res, 'Log in succed', 200);
     } catch (err) {
-        next(err);
+        error(req, res, err, 404);
     }
 };
 
@@ -48,11 +51,12 @@ async function deleteDataBody(req, res, next) {
     }
 };
 
-router.get('/login', login);
+router.post('/login', login);
+router.post('/logout', ctrl.logout);
 router.post('/', updateDataNew);
 router.patch('/', security(), updateDataNew);
 router.get('/:id', specificData);
 router.delete('/', deleteDataBody);
-router.post('/login/user', ctrl.logIn);
+router.post('/profile', authRequired, ctrl.profile);
 
 export default router;
