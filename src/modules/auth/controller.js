@@ -4,6 +4,7 @@ import { utilities as authIndex } from "../../auth/index.js";
 const TABLE = 'auth';
 const TABLE2 = 'tokens_login';
 const FIELD = 'user_auth';
+const FIELD2 = 'ident_auth';
 export function methods(dbInyected) {
 
     let db = dbInyected;
@@ -53,11 +54,13 @@ export function methods(dbInyected) {
         }
     }
 
-    const logout = (req, res) => {
-        res.cookie('token', "", {
-            expires: new Date(0)
-        })
-        return res.sendStatus(200);
+    const logout = async (data) => {
+        try {
+            const deleteToken = await db.deleteDataBody(TABLE2, FIELD2, data);
+            return deleteToken;
+        } catch (error) {
+            throw new Error(error);
+        }
     }
 
     const updateDataNew = async (data, method) => {

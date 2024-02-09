@@ -15,8 +15,9 @@ app.set('port', config.app.port);
 // Middleware
 app.use(morgan('dev'));
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
+app.use(express.urlencoded({extended: true}));
+
  
 // ROUTES
 app.use('/api/person', person);

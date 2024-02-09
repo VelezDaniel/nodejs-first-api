@@ -41,6 +41,18 @@ async function login (req, res, next) {
     }
 };
 
+async function logout (req, res, next) {
+    try {
+        res.cookie('token', "", {
+            expires: new Date(0)
+        })
+        const deleteToken = await ctrl.logout(req.body);
+        succes(req, res, deleteToken, 200);
+    } catch (err) {
+        error(req, res, err, 404);
+    }
+}
+
 async function deleteDataBody(req, res, next) {
     try {
         const items = await ctrl.deleteDataBody(req.body);
@@ -52,7 +64,7 @@ async function deleteDataBody(req, res, next) {
 };
 
 router.post('/login', login);
-router.post('/logout', ctrl.logout);
+router.post('/logout', logout);
 router.post('/', updateDataNew);
 router.patch('/', security(), updateDataNew);
 router.get('/:id', specificData);
