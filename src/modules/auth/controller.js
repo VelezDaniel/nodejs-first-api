@@ -21,6 +21,18 @@ export function methods(dbInyected) {
         return db.specificData(TABLE, FIELD, id);
     }
 
+    const specificDataToken = async (id) => {
+        // return db.specificData(TABLE2, FIELD2, id);
+        const data = await db.specificData(TABLE2, FIELD2, id);
+        console.log(data);
+
+        if(!data || !data.length === 0 || !data[0].TOKEN) {
+            return null;
+        }
+
+        return data;
+    }
+
     const login = async (user, password) => {
         try {
             const data = await db.query(TABLE, FIELD, user);
@@ -85,8 +97,16 @@ export function methods(dbInyected) {
         }
     }
 
-    const profile = (req, res) => {
-        res.send('Profile');
+    const profile = async (user) => {
+        const ident = user.IDENT_AUTH;
+        const userFound = await db.userProfile(ident);
+
+        if(!userFound) {return null}
+
+        // -- testing
+        console.log('userFound :>> ', userFound);
+
+        return userFound;
     }
 
     // ! register unnecessary
@@ -123,6 +143,7 @@ export function methods(dbInyected) {
         updateDataNew,
         login,
         specificData,
+        specificDataToken,
         logout,
         profile
     }

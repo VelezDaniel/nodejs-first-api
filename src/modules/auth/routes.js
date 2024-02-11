@@ -1,7 +1,7 @@
 import { Router, json } from "express";
 import { succes, error } from '../../network/response.js'
 import security from '../../modules/user/security.js';
-import { authRequired } from "../../middleware/validateToken.js";
+// import { authRequired } from "../../middleware/validateToken.js";
 import ctrl from './index.js';
 
 const router = Router();
@@ -9,12 +9,12 @@ const router = Router();
 const updateDataNew = async (req, res, next) => {
     let message;
     try {
-        if(req.body.user > 0){
+        if (req.body.user > 0) {
             const items = await ctrl.updateDataNew(req.body, req.method);
             message = 'Data save succesfully';
             succes(req, res, message, 201);
         } else {
-            throw new Error({message: "Information not updated"});
+            throw new Error({ message: "Information not updated" });
         }
     } catch (err) {
         next(err);
@@ -30,18 +30,51 @@ async function specificData(req, res, next) {
     }
 };
 
-async function login (req, res, next) {
+async function login(req, res, next) {
     try {
         const token = await ctrl.login(req.body.user, req.body.password);
-        res.cookie('token', token, {sameSite: 'None', secure: true});
-        // console.log(req.cookies);
+        res.cookie('token', token, { sameSite: 'None', secure: true });
+        console.log(token);
         succes(req, res, 'Log in succed', 200);
     } catch (err) {
         error(req, res, err, 404);
     }
 };
 
-async function logout (req, res, next) {
+async function authRequired(req, res, next) {
+    try {
+        // ID number of user (not person)
+        const result = await ctrl.specificDataToken(req.body.id);
+        // TESTING
+        console.log(result);
+        if (!result) {
+            error(req, res, 'Authorization denied', 401);
+        } else {
+            // succes(req, res, 'Authentication succesfully', 200);
+            req.user = result[0];
+            // TEStINg
+            console.log('Authentication succesfully');
+            next();
+        }
+    } catch (err) {
+        error(req, res, 'catch error - authRequired', 404);
+        console.log(err);
+    }
+}
+
+const profile = async (req, res) => {
+    try {
+        const result = await ctrl.profile(req.user);
+        // TESTING
+        console.log(result)
+        console.log(req.user);
+        succes(req, res, `Session active <Profile> -->>  ${result.name}`, 200);
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+async function logout(req, res, next) {
     try {
         res.cookie('token', "", {
             expires: new Date(0)
@@ -69,6 +102,6 @@ router.post('/', updateDataNew);
 router.patch('/', security(), updateDataNew);
 router.get('/:id', specificData);
 router.delete('/', deleteDataBody);
-router.post('/profile', authRequired, ctrl.profile);
+router.post('/profile', authRequired, profile);
 
 export default router;

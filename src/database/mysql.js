@@ -121,6 +121,36 @@ const query = async (table, field, ask) => {
     }
 }
 
+const userProfile = async (ident) => {
+    const result = await new Promise((resolve, reject) => {
+        connection.query(`SELECT * FROM PERSONA JOIN USUARIO ON PERSONA.ID_PERSONA = USUARIO.ID_USUARIO WHERE PERSONA.IDENTIFICACION = ?`, ident, (error, result) => {
+            return error ? reject(error) : resolve(result);
+        });
+    });
+
+    if (result.length > 0) {
+        const userFound = result[0];
+        const profileUser = {
+            id: userFound.ID_PERSONA,
+            identity: userFound.IDENTIFICACION,
+            name: userFound.NOMBRE,
+            lastName: userFound.APELLIDO,
+            address: userFound.DIRECCION,
+            phone: userFound.CELULAR,
+            email: userFound.CORREO,
+            state: userFound.ESTADO_USUARIO,
+            birth: userFound.NACIMIENTO,
+            role: userFound.FK_ID_REGISTRO_ROL
+        }
+
+        return profileUser;
+
+    } else {
+        return null;
+    }
+    // return result.length > 0 ? result[0] : null;
+}
+
 export const methods = {
     allData,
     specificData,
@@ -129,5 +159,6 @@ export const methods = {
     insertData,
     deleteData,
     deleteDataBody,
-    query
+    query,
+    userProfile
 }
