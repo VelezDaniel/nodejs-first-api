@@ -1,7 +1,8 @@
 import { Router, json } from "express";
 import { succes, error } from '../../network/response.js'
 import ctrl from './index.js';
-import { utilities as authIndex } from "../../auth/index.js";
+import checkAuth from "../../auth/security.js";
+// import { utilities as authIndex } from "../../auth/index.js";
 
 const router = Router();
 
@@ -62,7 +63,7 @@ async function deleteDataBody(req, res, next) {
 
 router.get('/', allData);
 router.get('/:id', specificData);
-router.post('/', addData);
+router.post('/', checkAuth(), addData);
 router.delete('/:id', deleteData);
 router.delete('/', deleteDataBody);
 

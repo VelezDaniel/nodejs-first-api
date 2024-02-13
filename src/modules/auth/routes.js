@@ -1,6 +1,7 @@
 import { Router, json } from "express";
 import { succes, error } from '../../network/response.js'
-import security from '../../modules/user/security.js';
+// import security from '../../modules/user/security.js';
+import checkAuth from "../../auth/security.js";
 import authRequired from "../../middleware/validateToken.js";
 import ctrl from './index.js';
 
@@ -99,9 +100,11 @@ async function deleteDataBody(req, res, next) {
 router.post('/login', login);
 router.post('/logout', logout);
 router.post('/', updateDataNew);
-router.patch('/', security(), updateDataNew);
+// Recibe el token generado por medio de Bearer
+router.patch('/', checkAuth(), updateDataNew);
 router.get('/:id', specificData);
 router.delete('/', deleteDataBody);
+//- authRequired Conectato con base de datos - (se gnenera un registro del token y se elimina el mismo cuando se hace logout)
 router.post('/profile', authRequired, profile);
 
 export default router;

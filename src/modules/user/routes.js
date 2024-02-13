@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { succes, error } from '../../network/response.js'
 import ctrl from './index.js';
-import security from './security.js';
+import checkAuth from "../../auth/security.js";
 
 const router = Router();
 
@@ -64,8 +64,8 @@ router.get('/:id', specificData);
 // Añadir un usuario que no ha sido registrado antes como usuario
 router.post('/', addData);
 // Cuando el usuario registrado desee actualizar sus datos
-router.patch('/', security(), addData);
+router.patch('/', checkAuth(), addData);
 router.delete('/:id', deleteData);
-router.delete('/', security(), deleteDataBody);
+router.delete('/', checkAuth(), deleteDataBody);
 
 export default router;

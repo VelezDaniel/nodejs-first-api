@@ -45,6 +45,7 @@ const decodeHeader = (req) => {
     return decoded;
 }
 
+// ! NOT USED
 const createAccessToken = (payload) =>{
     return new Promise((resolve, reject) => {
         jwt.sign(
