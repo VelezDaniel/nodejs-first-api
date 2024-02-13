@@ -1,7 +1,7 @@
-import { Router } from "express";
+import { Router, json } from "express";
 import { succes, error } from '../../network/response.js'
 import ctrl from './index.js';
-import security from './security.js';
+import { utilities as authIndex } from "../../auth/index.js";
 
 const router = Router();
 
@@ -26,12 +26,14 @@ async function specificData(req, res, next) {
 const addData = async (req, res, next) => {
     let message;
     try {
-        if(req.body.id > 0){
-            const items = await ctrl.addData(req.body, req.method);
-            message = 'Data save succesfully';
+        const items = await ctrl.addData(req.body);
+
+        if (req.body.id == 0) {
+            // const token = await authIndex.createAccessToken({id: WAIT})
+            // res.cookie("token", token);
+            message = 'Data saved succesfully';
         } else {
-            message = 'Bad request. Try Again';
-            throw new Error({message: "Invalid ID"});
+            message = 'Data updated succesfully';
         }
         succes(req, res, message, 201);
     } catch (err) {
@@ -54,18 +56,15 @@ async function deleteDataBody(req, res, next) {
         succes(req, res, 'Information deleted succesfully', 200);
     } catch (err) {
         next(err);
-        console.log(err);
         // next() -- Express fun
     }
 };
 
 router.get('/', allData);
 router.get('/:id', specificData);
-// Añadir un usuario que no ha sido registrado antes como usuario
 router.post('/', addData);
-// Cuando el usuario registrado desee actualizar sus datos
-router.patch('/', security(), addData);
 router.delete('/:id', deleteData);
-router.delete('/', security(), deleteDataBody);
+router.delete('/', deleteDataBody);
 
 export default router;
+

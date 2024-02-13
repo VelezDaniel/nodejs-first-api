@@ -13,7 +13,7 @@ const verifyToken = (token) => {
 }
 
 const checkToken = {
-    confirmToken: function(req){
+    confirmToken: function(req, id){
         const decoded = decodeHeader(req);
 
         // ? Si el id es diferente al que se intenta modificar del que corresponde el token no sera permitido 
