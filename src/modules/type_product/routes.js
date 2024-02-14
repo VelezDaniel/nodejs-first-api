@@ -49,7 +49,7 @@ async function deleteData(req, res,) {
             return error(req, res, 'Item not foun', 404);
         }
         const items = await ctrl.deleteData(req.params.id);
-        succes(req, res, 'Information deleted', 200);
+        succes(req, res, items, 200);
     } catch (err) {
         error(req, res, err, 500);
     }
@@ -65,11 +65,10 @@ async function deleteData(req, res,) {
 //     }
 // };
 
-router.get('/', allData);
-router.get('/:id', specificData);
+router.get('/', checkAuth(), allData);
+router.get('/:id', checkAuth(), specificData);
 router.post('/', checkAuth(), addData);
 router.delete('/:id', checkAuth(), deleteData);
-// router.delete('/', deleteDataBody);
 
 export default router;
 

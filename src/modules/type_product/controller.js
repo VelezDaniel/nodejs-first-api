@@ -1,6 +1,6 @@
 // import { methods as db } from "../../database/mysql";
-const TABLE = 'PRODUCTO';
-const FIELD = 'ID_PRODUCTO';
+const TABLE = 'TIPO_PRODUCTO';
+const FIELD = 'ID_TIPO_PRODUCTO';
 export function methods(dbInyected) {
 
     let db = dbInyected;
@@ -17,12 +17,7 @@ export function methods(dbInyected) {
         let data = {
             id: body.id,
             info: {
-                nombre_producto: body.name,
-                descripcion_producto: body.description,
-                precio_unitario: body.price,
-                estado_producto: body.state,
-                fk_tipo_producto: body.type,
-                fk_id_tamano: body.size
+                nombre_tipo_producto: body.name,
             }
         }
         return db.addData(TABLE, FIELD, data);

@@ -3,6 +3,8 @@ import { succes, error } from '../../network/response.js'
 // import security from '../../modules/user/security.js';
 import checkAuth from "../../auth/security.js";
 import authRequired from "../../middleware/validateToken.js";
+import { validateSchema } from "../../middleware/validator.middleware.js";
+import { loginSchema } from "../../schemas/auth.schema.js";
 import ctrl from './index.js';
 
 const router = Router();
@@ -97,7 +99,7 @@ async function deleteDataBody(req, res, next) {
     }
 };
 
-router.post('/login', login);
+router.post('/login', validateSchema(loginSchema), login);
 router.post('/logout', logout);
 router.post('/', updateDataNew);
 // Recibe el token generado por medio de Bearer
