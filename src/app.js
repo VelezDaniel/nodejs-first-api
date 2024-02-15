@@ -8,6 +8,7 @@ import auth from './modules/auth/routes.js';
 import type_product from './modules/type_product/routes.js';
 import products from './modules/products/routes.js';
 import cookieParser from 'cookie-parser';
+import path from 'path';
 
 const app = express();
 
@@ -20,7 +21,12 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({extended: true}));
 
- 
+// ? pruebas con frontEnd
+// app.use(express.static(path.join(__dirname, 'public')));
+// app.get('/', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// });
+
 // ROUTES
 app.use('/api/person', person);
 app.use('/api/users', users);
