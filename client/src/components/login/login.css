@@ -1,0 +1,54 @@
+@import url('../../index.css');
+
+.btn-Ingresar {
+  background: var(--btn-blue);
+  color: var(--bg-cards);
+  border-radius: 25px;
+  font-weight: 500;
+  border: none;
+  padding: .5em;
+  margin-bottom: 2em;
+}
+
+.btn-Registrarse {
+  background: var(--btn-blue);
+  color: var(--bg-cards);
+  border-radius: 25px;
+  font-weight: 500;
+  border: none;
+  padding: .5em;
+  margin-bottom: 2em;
+}
+
+.btn-Ingresar:hover, .btn-Registrarse:hover {
+  background-color: var(--mainColor);
+  color: var(--font-darkgray);
+  font-weight: 800;
+}
+
+.btn-Olvido {
+  background: transparent;
+  color: var(--font-darkgray);
+  font-weight: 600;
+  border: none;
+  padding: .5em;
+  margin-bottom: 3em;
+}
+
+.btn-Olvido:hover {
+  color: var(--btn-blue);
+  font-weight: 700;
+}
+
+.btn-Ingresar, .btn-Olvido, .btn-Registrarse {
+  cursor: pointer;
+}
+
+.input-group #eye-icon {
+  cursor: pointer;
+  border-radius: 14px;
+}
+
+.input-group #eye-icon:hover {
+  background-color: var(--btn-hover-light-blue-cake);
+}

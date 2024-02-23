@@ -1,3 +1,21 @@
+:root {
+  --font-darkgray: #272727;
+  --grayFonts: #969696;
+  --btn-hover-light-blue-cake: #8efbff;
+  --mainColor: #37dbff;
+  --btn-blue: #0D5D7D;
+  --backgroundNav: #37daff71;
+  --bg-cards: #C1FFFF;
+  --lightTitles: #ffffff;
+  --extraLight-color: #ebebeb;
+}
+
+* {
+  padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
 .title {
   font-size: 38px;
   color: aqua;

@@ -1,0 +1,118 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('../../index.css');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Montserrat", sans-serif;
+    text-decoration: none;
+}
+
+.contenedor-padre {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    background-image: url("../../assets/imgs/imagenhelados.jpg");
+    background-size: cover;
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+}
+
+.contenedor_fondo {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: rgba(55, 218, 255, 0.541);
+}
+
+.contenedor-hijo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-left: 6em;
+    position: relative;
+    background: white;
+    border-radius: 10px;
+    padding: 2em 4em;
+    background-color: var(--bg-cards);
+}
+
+.form-register {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.btn-volver {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+}
+
+.btn-volver i {
+    font-size: 40px;
+    color: var(--font-darkgray);
+    border-radius: 10px;
+}
+
+.btn-volver :hover {
+    background-color: var(--btn-hover-light-blue-cake);
+}
+
+.logo-register {
+    height: 200px;
+    width: auto;
+}
+
+.input-group {
+    border-bottom: 2px solid var(--font-darkgray);
+    margin-bottom: 1em;
+    width: 200px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 6px;
+}
+
+input#nacimiento {
+    border-bottom: 2px solid black;
+    margin-bottom: 1em;
+}
+
+.input-group input, input#nacimiento {
+    background: transparent;
+    border: none;
+    color: var(--font-darkgray);
+}
+
+.input-group input::placeholder, label{
+    color: var(--font-darkgray);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.input-group input:focus-visible {
+    outline: none;
+}
+.input-group label i {
+    font-size: 18px;
+}
+
+.btn-enviar {
+    background: var(--btn-blue);
+    color: var(--bg-cards);
+    border-radius: 25px;
+    font-weight: 500;
+    border: none;
+    padding: .5em;
+}
+
+.btn-enviar:hover {
+    background-color: var(--mainColor);
+    color: var(--font-darkgray);
+    font-weight: 700;
+}
