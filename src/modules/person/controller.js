@@ -21,7 +21,9 @@ export function methods(dbInyected) {
                 nombre: body.name,
                 apellido: body.lastName,
                 celular: body.phone,
-                direccion: body.address
+                direccion: body.address,
+                CORREO: body.email,
+                NACIMIENTO: body.birth
             }
         }
         return db.addData(TABLE, FIELD, data);

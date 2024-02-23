@@ -8,6 +8,7 @@
   --bg-cards: #C1FFFF;
   --lightTitles: #ffffff;
   --extraLight-color: #ebebeb;
+  --btn-home-hover: #dfdfdf67;
 }
 
 * {
@@ -16,7 +17,48 @@
 	box-sizing: border-box;
 }
 
-.title {
+/* .title {
   font-size: 38px;
   color: aqua;
+} */
+
+/* ! important */
+/* * - Display flex - * */
+.title-sect,
+.product-price,
+.btn-product-plus, .container-btn {
+	display: flex;
+	align-items: center;
+}
+
+/* Btn portfolio */
+.container-btn {
+	width: 100%;
+	justify-content: start;
+	padding: 32px 0;
+}
+
+.container-btn .btn-portfolio {
+	width: 166px;
+	height: 40px;
+	font-size: 16px;
+	font-weight: 600;
+	border-radius: 8px;
+	color: var(--mainColor);
+	border: 3px solid var(--mainColor);
+	background-color: transparent;
+	letter-spacing: 0.4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container-btn .btn-portfolio .arrow {
+	font-size: 24px;
+}
+
+.container-btn .btn-portfolio:hover, .container-btn .btn-portfolio:focus {
+	cursor: pointer;
+	background-color: var(--mainColor);
+	color: var(--lightTitles);
 }

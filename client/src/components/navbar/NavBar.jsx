@@ -2,7 +2,9 @@ import './navbar.css';
 
 function NavBar() {
   return (
-    <nav>
+
+    <div>
+      <nav>
         <div className="open-menu"><i className="fa fa-bars"></i></div>
         <ul className="main-menu hidden">
             <li><a href="#">Home</a></li>
@@ -15,12 +17,23 @@ function NavBar() {
         </div>
 
         <div className="icons h-content">
-            <a className="nav-item nav-icon" href=""><i className="bi bi-person"></i></a>
             <a className="nav-item nav-icon" href=""><i className="bi bi-handbag"></i></a>
+            <a className="nav-item nav-icon" href=""><i className="bi bi-person icon-person"></i></a>
         </div>
         <div id="cover-sidebar" className="cover-sidebar"></div>
     </nav>
 
+    <div className="welcome-menu">
+        <h3>Lorem ipsum im lor de prise effect track</h3>
+        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Id corrupti consectetur porro eum odit possimus
+            dolores quasi. Magnam.</p>
+        <div className="container-btn">
+            <button className="btn btn-portfolio">Registrarse
+                <i className="bi bi-arrow-right-short arrow"></i>
+            </button>
+        </div>
+    </div>
+    </div>
   )
 }
 

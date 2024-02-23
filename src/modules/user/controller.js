@@ -23,8 +23,6 @@ export function methods(dbInyected) {
             info: {
                 ID_USUARIO: body.id,
                 ESTADO_USUARIO: body.state,
-                NACIMIENTO: body.birth,
-                CORREO: body.email,
                 FK_ID_REGISTRO_ROL: body.registerRole
             }
         }
