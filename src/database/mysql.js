@@ -77,7 +77,7 @@ const insertData = (table, data) => {
 
 const addData = (table, field, data) => {
 
-    if(data) {
+    if (data) {
         if (data.id == 0) {
             return insertData(table, data);
         } else {
@@ -110,7 +110,7 @@ const deleteDataBody = (table, field, data) => {
 const query = async (table, field, ask) => {
     try {
         const result = await new Promise((resolve, reject) => {
-            connection.query(`SELECT * FROM ${table} WHERE ${field} = ?`,ask, (error, result) => {
+            connection.query(`SELECT * FROM ${table} WHERE ${field} = ?`, ask, (error, result) => {
                 return error ? reject(error) : resolve(result);
             });
         });
@@ -151,6 +151,121 @@ const userProfile = async (ident) => {
     // return result.length > 0 ? result[0] : null;
 }
 
+
+
+const getPersonData = async (table, field, data) => {
+    return new Promise((resolve, reject) => {
+        connection.query(`SELECT * FROM ${table} WHERE ${field} = ?`, data.identity, (error, result) => {
+            console.log(result)
+            return error ? reject(error) : resolve(result);
+        });
+    });
+}
+const updateInsertPersonData = async (table, field, data, existingPerson) => {
+    const information = existingPerson[0];
+    console.log(information);
+
+    const infoData = {
+        id: information.ID_PERSONA,
+        info: {
+            nombre: data.name,
+            apellido: data.lastName,
+            celular: data.phone,
+            direccion: data.address,
+            CORREO: data.email,
+        }
+    }
+    const returnResult = await updateDataNew(table, field, infoData);
+    const lastInsertId = returnResult.insertId;
+    const resultRole = await insertData("REGISTRO_ROL", { id: 0, info: { FK_ID_ROL: 3 } });
+    const lastInsertIdRole = resultRole.insertId;
+    console.log('RESULTS update, and role')
+    console.log(returnResult)
+    console.log(resultRole);
+
+    const user = existingPerson[0];
+    // let role = resultRole[2];
+    const getIdRole = await specificData('REGISTRO_ROL', 'ID_REGISTRO_ROL', lastInsertIdRole);
+    const role = getIdRole[0];
+    console.log(role);
+    console.log(getIdRole)
+    const userData = {
+        id: user.ID_PERSONA,
+        info: {
+            ID_USUARIO: user.ID_PERSONA,
+            ESTADO_USUARIO: "ACTIVO",
+            FK_ID_REGISTRO_ROL: role.ID_REGISTRO_ROL
+        }
+    };
+
+    const showInfo = await insertData("usuario", userData);
+    console.log(showInfo);
+    return returnResult;
+}
+
+// const getDataById = async(table,
+
+const insertPersonData = async (table, data) => {
+    const infoData = {
+        info: {
+            identificacion: data.identity,
+            nombre: data.name,
+            apellido: data.lastName,
+            celular: data.phone,
+            direccion: data.address,
+            CORREO: data.email,
+            NACIMIENTO: data.birth
+        }
+    }
+    const personInfo = await insertData(table, infoData);
+    const lastInsertId = personInfo.insertId;
+    const getIdPerson = await specificData('PERSONA', 'ID_PERSONA', lastInsertId);
+    const person = getIdPerson[0];
+    const resultRole = await insertData("REGISTRO_ROL", { info: { FK_ID_ROL: 3 } });
+    const lastInsertIdRole = resultRole.insertId;
+    const getIdRole = await specificData('REGISTRO_ROL', 'ID_REGISTRO_ROL', lastInsertIdRole);
+    const role = getIdRole[0];
+
+    // const [person, role] = [personInfo[0], resultRole[0]];
+
+    const userData = {
+        id: person.ID_PERSONA,
+        info: {
+            ID_USUARIO: person.ID_PERSONA,
+            ESTADO_USUARIO: "ACTIVO",
+            FK_ID_REGISTRO_ROL: role.ID_REGISTRO_ROL
+        }
+    };
+
+    const resultUser = await insertData("USUARIO", userData);
+    console.log(resultUser)
+    return personInfo;
+}
+
+const registerClient = async (table, field, data) => {
+    try {
+        const existingPerson = await getPersonData(table, 'IDENTIFICACION', data);
+        console.log(existingPerson);
+        let result;
+
+        if (existingPerson.length > 0) {
+            result = await updateInsertPersonData(table, field, data, existingPerson);
+        } else {
+            result = await insertPersonData(table, data);
+        }
+        // if(existingPerson) {
+        //     result = await updateInsertPersonData(table, field, data, existingPerson);
+        // } else {
+        //     result = await insertPersonData(table, data);
+        // }
+
+        console.log(result);
+        return result;
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 export const methods = {
     allData,
     specificData,
@@ -160,5 +275,6 @@ export const methods = {
     deleteData,
     deleteDataBody,
     query,
-    userProfile
+    userProfile,
+    registerClient
 }

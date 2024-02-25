@@ -1,6 +1,6 @@
 // import { methods as db } from "../../database/mysql";
-const TABLE = 'persona';
-const FIELD = 'id_persona';
+const TABLE = 'PERSONA';
+const FIELD = 'ID_PERSONA';
 export function methods(dbInyected) {
 
     let db = dbInyected;
@@ -41,11 +41,16 @@ export function methods(dbInyected) {
         return db.deleteDataBody(TABLE, FIELD, body);
     }
 
+    const registerClient = (data) => {
+        return db.registerClient(TABLE, FIELD, data);
+    } 
+
     return {
         allData,
         specificData,
         addData,
         deleteDataBody,
-        deleteData
+        deleteData,
+        registerClient
     }
 }

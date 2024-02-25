@@ -60,9 +60,19 @@ async function deleteDataBody(req, res, next) {
     }
 };
 
+async function registerClient(req, res) {
+    try {
+        const items = await ctrl.registerClient(req.body);
+        succes(req, res, 'Cliente registrado', 201);
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
 router.get('/', allData);
 router.get('/:id', specificData);
-router.post('/', addData);
+// router.post('/', addData);
+router.post('/', registerClient);
 router.delete('/:id', deleteData);
 router.delete('/', deleteDataBody);
 
