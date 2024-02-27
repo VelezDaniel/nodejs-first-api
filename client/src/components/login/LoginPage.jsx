@@ -11,7 +11,7 @@ function LoginPage() {
       <div className="contenedor-padre">
       <div className="contenedor_fondo"></div>
       <div className="contenedor-hijo">
-        <a className="btn-volver" href="#"><i className="bi bi-arrow-left-short"></i></a>
+        <a className="btn-volver" href="/"><i className="bi bi-arrow-left-short"></i></a>
         <img className="logo-register" src={logoImg} alt="" />
         <form className="form-register" onSubmit={handleSubmit(values => {
           console.log(values);

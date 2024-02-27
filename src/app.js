@@ -8,6 +8,7 @@ import auth from './modules/auth/routes.js';
 import type_product from './modules/type_product/routes.js';
 import products from './modules/products/routes.js';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 const app = express();
 
@@ -19,6 +20,9 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({extended: true}));
+app.use(cors({
+  origin: 'http://localhost:5173',
+}))
 
  
 // ROUTES

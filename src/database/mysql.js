@@ -33,6 +33,7 @@ const connectionMysql = () => {
 
 connectionMysql();
 
+// Mostrar todos los datos de una tabla
 const allData = (table) => {
     return new Promise((resolve, reject) => {
         connection.query(`SELECT * FROM ${table}`, (error, result) => {
@@ -41,6 +42,7 @@ const allData = (table) => {
     });
 }
 
+// Mostrar un dato especifico
 const specificData = (table, field, id) => {
     return new Promise((resolve, reject) => {
         connection.query(`SELECT * FROM ${table} WHERE ${field} = ${id}`, (error, result) => {
@@ -75,6 +77,7 @@ const insertData = (table, data) => {
     });
 }
 
+// Agregar un dato sea actualizar(updateDataNew) o uno nuevo (insertData)
 const addData = (table, field, data) => {
 
     if (data) {
@@ -121,6 +124,7 @@ const query = async (table, field, ask) => {
     }
 }
 
+// Obtener todos los datos del usuario que se ha logueado.
 const userProfile = async (ident) => {
     const result = await new Promise((resolve, reject) => {
         connection.query(`SELECT * FROM PERSONA JOIN USUARIO ON PERSONA.ID_PERSONA = USUARIO.ID_USUARIO WHERE PERSONA.IDENTIFICACION = ?`, ident, (error, result) => {
@@ -151,8 +155,8 @@ const userProfile = async (ident) => {
     // return result.length > 0 ? result[0] : null;
 }
 
-
-
+// ? Metodos especificos para registrar un usuario
+// Obtener persona (estricto para metodo REGISTER)
 const getPersonData = async (table, field, data) => {
     return new Promise((resolve, reject) => {
         connection.query(`SELECT * FROM ${table} WHERE ${field} = ?`, data.identity, (error, result) => {
@@ -161,6 +165,8 @@ const getPersonData = async (table, field, data) => {
         });
     });
 }
+
+// En caso de ya existir los datos del usuario se acualiza la tabla persona y se guardan los datos que hayan cambiado, excepto identificacion, id, fecha de nacimiento.
 const updateInsertPersonData = async (table, field, data, existingPerson) => {
     const information = existingPerson[0];
     console.log(information);
@@ -203,8 +209,7 @@ const updateInsertPersonData = async (table, field, data, existingPerson) => {
     return returnResult;
 }
 
-// const getDataById = async(table,
-
+// Agregar una nueva persona desde 0 a la tabla PERSONA
 const insertPersonData = async (table, data) => {
     const infoData = {
         info: {
@@ -212,22 +217,23 @@ const insertPersonData = async (table, data) => {
             nombre: data.name,
             apellido: data.lastName,
             celular: data.phone,
-            direccion: data.address,
+            direccion: 'Direccion no ingresada',
             CORREO: data.email,
             NACIMIENTO: data.birth
         }
     }
+    // Insertar en tabla persona
     const personInfo = await insertData(table, infoData);
     const lastInsertId = personInfo.insertId;
     const getIdPerson = await specificData('PERSONA', 'ID_PERSONA', lastInsertId);
     const person = getIdPerson[0];
+    // Insertar en tabla rol
     const resultRole = await insertData("REGISTRO_ROL", { info: { FK_ID_ROL: 3 } });
     const lastInsertIdRole = resultRole.insertId;
     const getIdRole = await specificData('REGISTRO_ROL', 'ID_REGISTRO_ROL', lastInsertIdRole);
     const role = getIdRole[0];
 
-    // const [person, role] = [personInfo[0], resultRole[0]];
-
+    // Objeto para insertar en USUARIO
     const userData = {
         id: person.ID_PERSONA,
         info: {
@@ -237,11 +243,13 @@ const insertPersonData = async (table, data) => {
         }
     };
 
+    // Insercion en usuario
     const resultUser = await insertData("USUARIO", userData);
     console.log(resultUser)
     return personInfo;
 }
 
+// Methodo principal para registro de usuarios.
 const registerClient = async (table, field, data) => {
     try {
         const existingPerson = await getPersonData(table, 'IDENTIFICACION', data);
@@ -253,12 +261,6 @@ const registerClient = async (table, field, data) => {
         } else {
             result = await insertPersonData(table, data);
         }
-        // if(existingPerson) {
-        //     result = await updateInsertPersonData(table, field, data, existingPerson);
-        // } else {
-        //     result = await insertPersonData(table, data);
-        // }
-
         console.log(result);
         return result;
     } catch (error) {
