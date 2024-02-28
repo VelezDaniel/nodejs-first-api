@@ -15,7 +15,7 @@ const updateDataNew = async (req, res, next) => {
         if (req.body.user > 0) {
             const items = await ctrl.updateDataNew(req.body, req.method);
             message = 'Data save succesfully';
-            succes(req, res, message, 201);
+            succes(req, res, {message, items}, 201);
         } else {
             throw new Error({ message: "Information not updated" });
         }

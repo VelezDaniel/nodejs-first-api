@@ -1,17 +1,67 @@
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 import "./register.css";
 import logoImg from "../../assets/imgs/helarticologo2.png";
 import { registerRequest, createPassword } from "../../api/auth";
+// import CreatePassword from "./CreatePassword";
 
 function RegisterPage() {
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-		watch,
-	} = useForm();
+	const { register, handleSubmit } = useForm();
+	let insertId;
 
-  const pass = watch('password');
+	// PASSWORD LOGIC
+	// console.log("userId: ",userId);
+	const [password, setPassword] = useState("");
+	const [userId, setUserId] = useState("");
+	const [confirmPassword, setConfirmPassword] = useState("");
+	const [passwordError, setPasswordError] = useState("");
+
+	const handlePasswordChange = (e) => {
+		setPassword(e.target.value);
+	};
+
+	const handleConfirmPasswordChange = (e) => {
+		setConfirmPassword(e.target.value);
+	};
+
+	const handleUserIdChange = (e) => {
+		setUserId(e.target.value);
+	};
+
+	const handleSubmitPass = async (values) => {
+		// e.preventDefault();
+
+		try {
+			console.log("Password:", password);
+			console.log("Confirm Password:", confirmPassword);
+
+			if (password !== confirmPassword) {
+				setPasswordError("Contraseñas no coinciden");
+				return;
+			}
+
+			const userInfo = {
+				user: userId,
+				password: password,
+				confirmPassword: confirmPassword,
+			};
+
+			console.log("UserInfo:", userInfo);
+
+			const result = await createPassword(userInfo);
+
+			console.log("Response of createPassword:", result);
+			console.log("Response data of createPassword:", result.data);
+			console.log("Insert Id from createPassword:", result.insertId);
+
+			console.log(
+				`Insert Id (proviene de register form): ${insertId}, / UserInfo post query = ${userInfo}`
+			);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	return (
 		<div className="contenedor-padre">
 			<div className="contenedor_fondo"></div>
@@ -23,11 +73,15 @@ function RegisterPage() {
 				<form
 					className="form-register"
 					onSubmit={handleSubmit(async (values) => {
-						console.log(values);
-						// const userInfo = {...values};
-						// userInfo.id = 0;
-						const res = await registerRequest(values);
-						console.log(res);
+						try {
+							// console.log(`values: ${values}`);
+							const res = await registerRequest(values);
+							console.log(`response of registerRequest: ${res}`);
+							insertId = res;
+							console.log(`Insert Id (register form): ${insertId}`);
+						} catch (error) {
+							console.log("Error durante el registro:", error);
+						}
 					})}
 				>
 					<div className="input-group">
@@ -63,6 +117,8 @@ function RegisterPage() {
 							type="text"
 							{...register("identity", { required: true })}
 							placeholder="Documento"
+							value={userId}
+							onChange={handleUserIdChange}
 							id="documento"
 						/>
 					</div>
@@ -107,53 +163,52 @@ function RegisterPage() {
 				</form>
 			</div>
 			{/* Password Form */}
+			{/* <CreatePassword insertId={insertId} /> */}
 			<div className="contenedor-hijo create-password">
 				<a className="btn-volver" href="/">
 					<i className="bi bi-arrow-left-short"></i>
 				</a>
 				<img className="logo-register" src={logoImg} alt="logo helartico" />
-				<form
-					className="form-register"
-					onSubmit={handleSubmit(async (values) => {
-						console.log(values);
-
-						// const userInfo = {...values};
-						// ! ORGANIZAR ESTO userInfo.id = 0;
-						const res = await createPassword(values);
-						console.log(res);
-					})}
-				>
+				<form className="form-register" onSubmit={handleSubmitPass}>
+					{/* <div className="input-group">
+						<label htmlFor="userId">
+							<i className="bi bi-lock"></i>
+						</label>
+						<input
+							type="number"
+							value={userId}
+							onChange={handlePasswordChange}
+							placeholder="user"
+							id="password"
+						/>
+						{passwordError && <p>{passwordError}</p>}
+					</div> */}
 					<div className="input-group">
 						<label htmlFor="password">
 							<i className="bi bi-lock"></i>
 						</label>
-						{/* <input type="text" name="nombres" id="nombres" placeholder="Nombres" /> */}
 						<input
 							type="password"
-							{...register("password", { required: true })}
+							value={password}
+							onChange={handlePasswordChange}
 							placeholder="Contraseña"
 							id="password"
 						/>
-            {errors.password && <p>{errors.password.message}</p>}
+						{passwordError && <p>{passwordError}</p>}
 					</div>
 					<div className="input-group">
 						<label htmlFor="confirmPassword">
 							<i className="bi bi-lock"></i>
 						</label>
-						{/* <input type="text" name="apellidos" id="apellidos" placeholder="Apellidos"/> */}
 						<input
 							type="password"
-							{...register("confirmPassword", { required: true, validate: (value) => value === pass || 'Contraseñas no coinciden', })}
+							value={confirmPassword}
+							onChange={handleConfirmPasswordChange}
 							placeholder="Confirmar contraseña"
 							id="confirmPassword"
 						/>
-            {errors.confirmPassword && <p>{errors.confirmPassword.message}</p>}
 					</div>
-					<input
-						className="btn-enviar"
-						type="submit"
-						value="Confirmar"
-					></input>
+					<input className="btn-enviar" type="submit" value="Confirmar"></input>
 				</form>
 			</div>
 		</div>

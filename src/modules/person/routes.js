@@ -63,7 +63,7 @@ async function deleteDataBody(req, res, next) {
 async function registerClient(req, res) {
     try {
         const items = await ctrl.registerClient(req.body);
-        succes(req, res, 'Cliente registrado', 201);
+        succes(req, res, items, 201);
     } catch (error) {
         throw new Error(error);
     }

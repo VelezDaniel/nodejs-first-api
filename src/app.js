@@ -24,7 +24,6 @@ app.use(cors({
   origin: 'http://localhost:5173',
 }))
 
- 
 // ROUTES
 app.use('/api/person', person);
 app.use('/api/users', users);

@@ -1,7 +1,7 @@
 // import { methods as db } from "../../database/mysql";
 import bcrypt from 'bcrypt';
 import { utilities as authIndex } from "../../auth/index.js";
-const TABLE = 'auth';
+const TABLE = 'AUTH';
 const TABLE2 = 'tokens_login';
 const FIELD = 'user_auth';
 const FIELD2 = 'ident_auth';
