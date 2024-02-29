@@ -10,6 +10,7 @@ import products from './modules/products/routes.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
+
 const app = express();
 
 // Settings
