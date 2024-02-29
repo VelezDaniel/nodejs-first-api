@@ -3,7 +3,6 @@ import { useState } from "react";
 import "./register.css";
 import logoImg from "../../assets/imgs/helarticologo2.png";
 import { registerRequest, createPassword } from "../../api/auth";
-// import CreatePassword from "./CreatePassword";
 
 function RegisterPage() {
 	const { register, handleSubmit } = useForm();
