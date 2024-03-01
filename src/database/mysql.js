@@ -21,14 +21,14 @@ const connectionMysql = () => {
         }
     });
 
-    connection.on('error', err => {
-        console.log('[DB error]', err);
-        if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-            connectionMysql();
-        } else {
-            throw err;
-        }
-    });
+    // connection.on('error', err => {
+    //     console.log('[DB error]', err);
+    //     if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+    //         connectionMysql();
+    //     } else {
+    //         throw err;
+    //     }
+    // });
 }
 
 connectionMysql();
