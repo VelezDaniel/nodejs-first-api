@@ -56,7 +56,6 @@ async function deleteDataBody(req, res, next) {
         succes(req, res, 'Information deleted succesfully', 200);
     } catch (err) {
         next(err);
-        // next() -- Express fun
     }
 };
 

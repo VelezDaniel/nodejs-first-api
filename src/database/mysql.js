@@ -255,14 +255,21 @@ const registerClient = async (table, field, data) => {
         const existingPerson = await getPersonData(table, 'IDENTIFICACION', data);
         console.log(existingPerson);
         let result;
+        let returnResult;
+        let idInserted;
 
         if (existingPerson.length > 0) {
             result = await updateInsertPersonData(table, field, data, existingPerson);
+            idInserted = result.insertId;
+            returnResult = await specificData(table, field, idInserted)
         } else {
             result = await insertPersonData(table, data);
+            idInserted = result.insertId;
+            returnResult = await specificData(table, field, idInserted);
         }
         console.log(result);
-        return result;
+        console.log(returnResult);
+        return returnResult;
     } catch (error) {
         console.log(error)
     }
