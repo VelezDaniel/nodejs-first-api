@@ -10,27 +10,54 @@ const dbConfig = {
 
 let connection;
 
+// const connectionMysql = () => {
+//     connection = mysql.createConnection(dbConfig);
+//     connection.connect((err) => {
+//         if (err) {
+//             console.log('[dbConfig]', dbConfig);
+//             console.log('[DB Error]', err);
+//             // setTimeout(connectionMysql, 200);
+//         } else {
+//             console.log(' DB connected');
+//         }
+//     });
+
+//     // connection.on('error', err => {
+//     //     console.log('[DB error]', err);
+//     //     if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+//     //         connectionMysql();
+//     //     } else {
+//     //         throw err;
+//     //     }
+//     // });
+// }
+
 const connectionMysql = () => {
     connection = mysql.createConnection(dbConfig);
+    
     connection.connect((err) => {
         if (err) {
-            console.log('[dbConfig]', dbConfig);
-            console.log('[DB Error]', err);
-            // setTimeout(connectionMysql, 200);
+            console.error('[DB Error]', err);
+            // Puedes manejar el error de manera más específica aquí
+            throw new Error('Error de conexión a la base de datos');
         } else {
-            console.log(' DB connected');
+            console.log('DB connected');
         }
     });
 
-    // connection.on('error', err => {
-    //     console.log('[DB error]', err);
-    //     if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-    //         connectionMysql();
-    //     } else {
-    //         throw err;
-    //     }
-    // });
+    connection.on('error', (err) => {
+        console.error('[DB error]', err);
+        if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+            console.log('Reconectando a la base de datos...');
+            connectionMysql();
+        } else {
+            throw err;
+        }
+    });
 }
+
+connectionMysql();
+
 
 connectionMysql();
 
