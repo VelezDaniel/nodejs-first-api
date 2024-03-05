@@ -62,7 +62,12 @@ async function deleteDataBody(req, res, next) {
 async function registerClient(req, res) {
     try {
         const items = await ctrl.registerClient(req.body);
-        succes(req, res, items, 201);
+        if (items === false) {
+            succes(req, res, 'La información ya existe', 409);
+            // res.status(409).json({ message: ["El usuario ya existe"] });
+        } else {
+            succes(req, res, items, 201);
+        }
     } catch (error) {
         throw new Error(error);
     }
