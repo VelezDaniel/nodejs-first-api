@@ -2,6 +2,8 @@ import { Router, json } from "express";
 import { succes, error } from '../../network/response.js'
 import ctrl from './index.js';
 import { utilities as authIndex } from "../../auth/index.js";
+import { validateSchema } from "../../middleware/validator.middleware.js";
+import { registerSchema } from "../../schemas/auth.schema.js";
 
 const router = Router();
 
@@ -63,20 +65,20 @@ async function registerClient(req, res) {
     try {
         const items = await ctrl.registerClient(req.body);
         if (items === false) {
-            succes(req, res, 'La información ya existe', 409);
-            // res.status(409).json({ message: ["El usuario ya existe"] });
+            res.status(409).json(["El usuario ya existe"]);
         } else {
             succes(req, res, items, 201);
         }
-    } catch (error) {
-        throw new Error(error);
+    } catch (err) {
+        console.log(err);
+        error(req, res, err, 500);
     }
 };
 
 router.get('/', allData);
 router.get('/:id', specificData);
 // router.post('/', addData);
-router.post('/', registerClient);
+router.post('/', validateSchema(registerSchema), registerClient);
 router.delete('/:id', deleteData);
 router.delete('/', deleteDataBody);
 

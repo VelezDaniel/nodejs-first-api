@@ -1,12 +1,45 @@
 import { z } from "zod";
 
-const registerSchema = z.object({
-  id: z.number({
-    required_error: 'No es un numero entero',
-  })
-  .nonnegative({
-    message: 'No es un id valido',
-  }),
+// export const registerSchema = z.object({
+//   id: z.number({
+//     required_error: 'No es un numero entero',
+//   })
+//   .nonnegative({
+//     message: 'No es un id valido',
+//   }),
+//   identity: z.string({
+//     required_error: 'Tipo no valido',
+//   }),
+//   name: z.string({
+//     required_error: 'Nombre(s) es requerido',
+//   }),
+//   lastName: z.string({
+//     required_error: 'Apellidos requerido',
+//   }),
+//   address: z.string({
+//     required_error: 'direccion es requerida',
+//   }),
+//   phone: z.string({
+//     required_error: 'Celular es requerido',
+//   }).length(10, {message: 'No es un numero de celular valido'}),
+//   state: z.boolean({
+//     required_error: 'Se espera valor booleano',
+//   }),
+//   birth: z.date({
+//     required_error: 'Please select a date',
+//   }),
+//   email: z.string({
+//     required_error: 'Correo es requerido',
+//   })
+//   .email({
+//     message: "Correo invalido",
+//   }),
+//   role: z.number({
+//     required_error: 'Debe ser un numero entero positivo',
+//   }).positive({ message: 'No existe role con este numero'})
+// });
+
+export const registerSchema = z.object({
   identity: z.string({
     required_error: 'Tipo no valido',
   }),
@@ -16,28 +49,20 @@ const registerSchema = z.object({
   lastName: z.string({
     required_error: 'Apellidos requerido',
   }),
-  address: z.string({
-    required_error: 'direccion es requerida',
-  }),
   phone: z.string({
     required_error: 'Celular es requerido',
   }).length(10, {message: 'No es un numero de celular valido'}),
-  state: z.boolean({
-    required_error: 'Se espera valor booleano',
-  }),
-  birth: z.date({
-    required_error: 'Please select a date',
-  }),
+  // birth: z.date({
+  //   required_error: 'Please select a date',
+  // }),
   email: z.string({
     required_error: 'Correo es requerido',
   })
   .email({
     message: "Correo invalido",
-  }),
-  role: z.number({
-    required_error: 'Debe ser un numero entero positivo',
-  }).positive({ message: 'No existe role con este numero'})
+  })
 });
+
 
 export const clientSchema = z.object({
   id: z.number({
