@@ -8,19 +8,28 @@ const dbConfig = {
     database: config.mysql.database
 }
 
-let connection;
+let pool;
 
-const connectionMysql = () => {
-    connection = mysql.createConnection(dbConfig);
-    connection.connect((err) => {
-        if (err) {
-            console.log('[dbConfig]', dbConfig);
-            console.log('[DB Error]', err);
-            // setTimeout(connectionMysql, 200);
-        } else {
-            console.log(' DB connected');
-        }
-    });
+const createPool = () => {
+    pool = mysql.createPool(dbConfig);
+    console.log('DB pool connected');
+}
+
+createPool();
+// ! not working in production
+// let connection;
+
+// const connectionMysql = () => {
+//     connection = mysql.createConnection(dbConfig);
+//     connection.connect((err) => {
+//         if (err) {
+//             console.log('[dbConfig]', dbConfig);
+//             console.log('[DB Error]', err);
+//             // setTimeout(connectionMysql, 200);
+//         } else {
+//             console.log(' DB connected');
+//         }
+//     });
 
     // connection.on('error', err => {
     //     console.log('[DB error]', err);
@@ -30,41 +39,14 @@ const connectionMysql = () => {
     //         throw err;
     //     }
     // });
-}
-
-// const connectionMysql = () => {
-//     connection = mysql.createConnection(dbConfig);
-    
-//     connection.connect((err) => {
-//         if (err) {
-//             console.error('[DB Error]', err);
-//             // Puedes manejar el error de manera más específica aquí
-//             throw new Error('Error de conexión a la base de datos');
-//         } else {
-//             console.log('DB connected');
-//         }
-//     });
-
-//     connection.on('error', (err) => {
-//         console.error('[DB error]', err);
-//         if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-//             console.log('Reconectando a la base de datos...');
-//             connectionMysql();
-//         } else {
-//             throw err;
-//         }
-//     });
 // }
 
-connectionMysql();
-
-
-connectionMysql();
+// connectionMysql();
 
 // Mostrar todos los datos de una tabla
 const allData = (table) => {
     return new Promise((resolve, reject) => {
-        connection.query(`SELECT * FROM ${table}`, (error, result) => {
+        pool.query(`SELECT * FROM ${table}`, (error, result) => {
             return error ? reject(error) : resolve(result);
         });
     });
