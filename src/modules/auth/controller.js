@@ -4,7 +4,7 @@ import { utilities as authIndex } from "../../auth/index.js";
 const TABLE = 'AUTH';
 const TABLE2 = 'tokens_login';
 const FIELD = 'user_auth';
-const FIELD2 = 'ident_auth';
+const FIELD2 = 'id_auth';
 export function methods(dbInyected) {
 
     let db = dbInyected;
@@ -89,11 +89,11 @@ export function methods(dbInyected) {
         }
         if (method === 'POST') {
             const queryResult = await db.query(TABLE, FIELD, data.user);
-            if (queryResult.PASS_AUTH === '') {
+            if (queryResult.PASS_AUTH == '') {
                 return db.updateDataNew(TABLE, FIELD, authData);
             } else { throw new Error('Action denied'); }
         } else {
-            if (method === 'PATCH') { return db.updateDataNew(TABLE, FIELD, authData); }
+            if (method === 'PATCH') { return db.updateDataNew(TABLE, FIELD2, authData); }
         }
     }
 

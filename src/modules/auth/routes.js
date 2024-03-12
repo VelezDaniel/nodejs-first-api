@@ -1,4 +1,4 @@
-import { Router, json } from "express";
+import { Router } from "express";
 import { succes, error } from '../../network/response.js'
 // import security from '../../modules/user/security.js';
 import checkAuth from "../../auth/security.js";
@@ -40,7 +40,8 @@ async function login(req, res, next) {
         console.log(token);
         succes(req, res, 'Log in succed', 200);
     } catch (err) {
-        error(req, res, err, 404);
+        const errorsLogin = ['El usuario no existe, ', err];
+        error(req, res, errorsLogin, 404);
     }
 };
 

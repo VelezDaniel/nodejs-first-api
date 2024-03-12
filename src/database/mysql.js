@@ -55,7 +55,7 @@ const allData = (table) => {
 // Mostrar un dato especifico
 const specificData = (table, field, id) => {
     return new Promise((resolve, reject) => {
-        connection.query(`SELECT * FROM ${table} WHERE ${field} = ${id}`, (error, result) => {
+        pool.query(`SELECT * FROM ${table} WHERE ${field} = ${id}`, (error, result) => {
             return error ? reject(error) : resolve(result);
         });
     });
@@ -72,7 +72,7 @@ const updateDataNew = (table, field, data) => {
 
         // const values = [data.info.identificacion, data.info.nombre, data.info.apellido, data.info.direccion, data.info.celular, field, data.id];
 
-        const result = connection.query(query, values, (error, result) => {
+        const result = pool.query(query, values, (error, result) => {
             return error ? reject(error) : resolve(result);
         });
         // console.log(result);
@@ -81,7 +81,7 @@ const updateDataNew = (table, field, data) => {
 
 const insertData = (table, data) => {
     return new Promise((resolve, reject) => {
-        connection.query(`INSERT INTO ${table} SET ?`, data.info, (error, result) => {
+        pool.query(`INSERT INTO ${table} SET ?`, data.info, (error, result) => {
             return error ? reject(error) : resolve(result);
         });
     });
@@ -104,7 +104,7 @@ const addData = (table, field, data) => {
 // #  Use URL request # 
 const deleteData = (table, nameId, id) => {
     return new Promise((resolve, reject) => {
-        connection.query(`DELETE FROM ${table} WHERE ${nameId}= ${id}`, (error, result) => {
+        pool.query(`DELETE FROM ${table} WHERE ${nameId}= ${id}`, (error, result) => {
             return error ? reject(error) : resolve(result);
         });
     });
@@ -114,7 +114,7 @@ const deleteData = (table, nameId, id) => {
 const deleteDataBody = (table, field, data) => {
     const id = data.id;
     return new Promise((resolve, reject) => {
-        connection.query(`DELETE FROM ?? WHERE ??= ?`, [table, field, id], (error, result) => {
+        pool.query(`DELETE FROM ?? WHERE ??= ?`, [table, field, id], (error, result) => {
             return error ? reject(error) : resolve(result);
         });
     });
@@ -123,7 +123,7 @@ const deleteDataBody = (table, field, data) => {
 const query = async (table, field, ask) => {
     try {
         const result = await new Promise((resolve, reject) => {
-            connection.query(`SELECT * FROM ${table} WHERE ${field} = ?`, ask, (error, result) => {
+            pool.query(`SELECT * FROM ${table} WHERE ${field} = ?`, ask, (error, result) => {
                 return error ? reject(error) : resolve(result);
             });
         });
@@ -137,7 +137,7 @@ const query = async (table, field, ask) => {
 // Obtener todos los datos del usuario que se ha logueado.
 const userProfile = async (ident) => {
     const result = await new Promise((resolve, reject) => {
-        connection.query(`SELECT * FROM PERSONA JOIN USUARIO ON PERSONA.ID_PERSONA = USUARIO.ID_USUARIO WHERE PERSONA.IDENTIFICACION = ?`, ident, (error, result) => {
+        pool.query(`SELECT * FROM PERSONA JOIN USUARIO ON PERSONA.ID_PERSONA = USUARIO.ID_USUARIO WHERE PERSONA.IDENTIFICACION = ?`, ident, (error, result) => {
             return error ? reject(error) : resolve(result);
         });
     });
@@ -169,7 +169,7 @@ const userProfile = async (ident) => {
 // Obtener persona (estricto para metodo REGISTER)
 const getPersonData = async (table, field, data) => {
     return new Promise((resolve, reject) => {
-        connection.query(`SELECT * FROM ${table} WHERE ${field} = ?`, data.identity, (error, result) => {
+        pool.query(`SELECT * FROM ${table} WHERE ${field} = ?`, data.identity, (error, result) => {
             console.log(result)
             return error ? reject(error) : resolve(result);
         });
