@@ -1,6 +1,7 @@
 // import { methods as db } from "../../database/mysql";
 import bcrypt from 'bcrypt';
 import { utilities as authIndex } from "../../auth/index.js";
+import { createAccessToken } from '../../libs/jwt.js';
 const TABLE = 'AUTH';
 const TABLE2 = 'tokens_login';
 const FIELD = 'user_auth';
@@ -44,7 +45,9 @@ export function methods(dbInyected) {
             const PasswordMatch = await bcrypt.compare(password, data.PASS_AUTH);
             if (PasswordMatch) {
                 // return authIndex.assignToken({ ...data });
+                // ? 
                 const token = authIndex.assignToken({ ...data });
+                // const token = await createAccessToken(data)
                 const user = data.USER_AUTH;
                 const infoTk = {
                     info: {
