@@ -2,6 +2,8 @@
 import bcrypt from 'bcrypt';
 import { utilities as authIndex } from "../../auth/index.js";
 import { createAccessToken } from '../../libs/jwt.js';
+import jwt from "jsonwebtoken";
+import config from '../../config.js'
 const TABLE = 'AUTH';
 const TABLE2 = 'tokens_login';
 const FIELD = 'user_auth';
@@ -45,9 +47,9 @@ export function methods(dbInyected) {
             const PasswordMatch = await bcrypt.compare(password, data.PASS_AUTH);
             if (PasswordMatch) {
                 // return authIndex.assignToken({ ...data });
-                // ? 
-                const token = authIndex.assignToken({ ...data });
-                // const token = await createAccessToken(data)
+                
+                // const token = authIndex.assignToken({ ...data });
+                const token = await createAccessToken(data)
                 const user = data.USER_AUTH;
                 const infoTk = {
                     info: {
@@ -91,13 +93,44 @@ export function methods(dbInyected) {
             }
         }
         if (method === 'POST') {
-            const queryResult = await db.query(TABLE, FIELD, data.user);
-            if (queryResult.PASS_AUTH == '') {
-                return db.updateDataNew(TABLE, FIELD, authData);
-            } else { throw new Error('Action denied'); }
+            // const queryResult = await db.query(TABLE, FIELD, data.user);
+            // if (queryResult.PASS_AUTH < '') {
+            //     return db.updateDataNew(TABLE, FIELD, authData);
+            // } else { throw new Error('Action denied'); }
+            return db.updateDataNew(TABLE, FIELD, authData);
         } else {
             if (method === 'PATCH') { return db.updateDataNew(TABLE, FIELD2, authData); }
+            else {
+                throw new Error (error);
+            }
         }
+    }
+
+    const verifyToken = async (token) => {
+        const SECRET = config.jwt.security;
+
+        jwt.verify(token, SECRET, async (err, user) => {
+            if(err) return new Error('Error in verify token: ', err)
+            console.log('MOSTRANDO USER de verifyToken controller: ', user)
+            // identificacion o IDENTIFICACION e ID_PERSONA
+            // Comprobar existencia en tabla usuario
+            const userfound = await db.specificData('usuario', 'id_usuario', user.id);
+            if (!userfound) return new Error('Not found -- Unauthorized');
+
+            // Traer informacion de la tabla persona
+            const infoPerson = await db.specificData('persona', 'id_persona', user.id);
+            return {
+                id: infoPerson.ID_PERSONA,
+                identity: infoPerson.IDENTIFICACION,
+                state: userfound.ESTADO_USUARIO,
+                name: infoPerson.NOMBRE,
+                lastName: infoPerson.APELLIDO,
+                address: infoPerson.DIRECCION,
+                email: infoPerson.Correo,
+                phone: infoPerson.CELULAR,
+                birth: infoPerson.NACIMIENTO
+            }
+        })
     }
 
     const profile = async (user) => {
@@ -112,35 +145,6 @@ export function methods(dbInyected) {
         return userFound;
     }
 
-    // ! register unnecessary
-    // const register = async (req, res) => {
-    //     // console.log(req.body);
-    //     const {userId, name, lastName, phone, address, birth, email} = req.body;
-
-    //     try {
-    //         const userInfo = {
-    //             userId,
-    //             name,
-    //             lastName,
-    //             phone,
-    //             address,
-    //             birth,
-    //             email
-    //         }
-
-    //         await 
-
-
-    //         res.send('Registrered');
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-
-    //     // console.log(userInfo);
-
-
-    // }
-
     return {
         allData,
         updateDataNew,
@@ -148,6 +152,7 @@ export function methods(dbInyected) {
         specificData,
         specificDataToken,
         logout,
-        profile
+        profile,
+        verifyToken
     }
 }

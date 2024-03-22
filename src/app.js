@@ -21,12 +21,14 @@ app.use(cookieParser());
 app.use(express.urlencoded({extended: true}));
 app.use(cors({
   origin: 'http://localhost:5173',
+  // Credenciales son necesarias para la respuesta con axios
+  credentials: true
 }))
 
 // ROUTES
-app.get('/', (req, res,) => {
-  res.send('Welcome to my server in railway :D')
-})
+// app.get('/', (req, res,) => {
+//   res.send('Welcome to my server in railway :D')
+// })
 app.use('/api/person', person);
 app.use('/api/users', users);
 app.use('/api/auth', auth);

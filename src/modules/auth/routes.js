@@ -15,7 +15,7 @@ const updateDataNew = async (req, res, next) => {
         if (req.body.user > 0) {
             const items = await ctrl.updateDataNew(req.body, req.method);
             message = 'Data save succesfully';
-            succes(req, res, {message, items}, 201);
+            succes(req, res, { message, items }, 201);
         } else {
             throw new Error({ message: "Information not updated" });
         }
@@ -100,7 +100,22 @@ async function deleteDataBody(req, res, next) {
     }
 };
 
+async function verifyToken(req, res, next) {
+    try {
+        // const item = await
+        const token = req.cookies;
+
+        if (!token) { return error(req, res, 'Token not found', 401) }
+        const result = await ctrl.verifyToken(token);
+        succes(req, res, result, 200);
+        next();
+    } catch (error) {
+        console.log('verifyToken function in routes: ',error)
+    }
+}
+
 router.post('/login', validateSchema(loginSchema), login);
+router.post('/verify', verifyToken);
 router.post('/logout', logout);
 router.post('/', updateDataNew);
 // Recibe el token generado por medio de Bearer
