@@ -29,7 +29,7 @@ export function methods(dbInyected) {
         const data = await db.specificData(TABLE2, FIELD2, id);
         console.log(data);
 
-        if(!data || !data.length === 0 || !data[0].TOKEN) {
+        if (!data || !data.length === 0 || !data[0].TOKEN) {
             return null;
         }
 
@@ -47,9 +47,11 @@ export function methods(dbInyected) {
             const PasswordMatch = await bcrypt.compare(password, data.PASS_AUTH);
             if (PasswordMatch) {
                 // return authIndex.assignToken({ ...data });
-                
+
                 // const token = authIndex.assignToken({ ...data });
                 const token = await createAccessToken(data)
+                const userProfile = await db.userProfile(data.USER_AUTH)
+                console.log('userProfile: ', userProfile);
                 const user = data.USER_AUTH;
                 const infoTk = {
                     info: {
@@ -59,7 +61,7 @@ export function methods(dbInyected) {
                 }
                 const resultSavedToken = await db.insertData(TABLE2, infoTk);
                 if (resultSavedToken) {
-                    return token;
+                    return { token, userProfile };
                 } else {
                     throw new Error('Something was wrong...');
                 }
@@ -101,35 +103,50 @@ export function methods(dbInyected) {
         } else {
             if (method === 'PATCH') { return db.updateDataNew(TABLE, FIELD2, authData); }
             else {
-                throw new Error (error);
+                throw new Error(error);
             }
         }
     }
 
     const verifyToken = async (token) => {
-        const SECRET = config.jwt.security;
+        return new Promise((resolve, reject) => {
+            const SECRET = config.jwt.security;
 
-        jwt.verify(token, SECRET, async (err, user) => {
-            if(err) return new Error('Error in verify token: ', err)
-            console.log('MOSTRANDO USER de verifyToken controller: ', user)
-            // identificacion o IDENTIFICACION e ID_PERSONA
-            // Comprobar existencia en tabla usuario
-            const userfound = await db.specificData('usuario', 'id_usuario', user.id);
-            if (!userfound) return new Error('Not found -- Unauthorized');
+            jwt.verify(token, SECRET, async (err, user) => {
+                if (err) {
+                    console.log('Error in verify token: ', err);
+                    reject(new Error('Error in verify token: ' + err))
+                    return;
+                }
+                console.log('MOSTRANDO USER de verifyToken controller: ', user)
+                // identificacion o IDENTIFICACION e ID_PERSONA
+                // Comprobar existencia en tabla usuario
+                try {
+                    const userfound = await db.specificData('usuario', 'id_usuario', user.USER_AUTH);
+                    if (!userfound) return new Error('Not found -- Unauthorized');
 
-            // Traer informacion de la tabla persona
-            const infoPerson = await db.specificData('persona', 'id_persona', user.id);
-            return {
-                id: infoPerson.ID_PERSONA,
-                identity: infoPerson.IDENTIFICACION,
-                state: userfound.ESTADO_USUARIO,
-                name: infoPerson.NOMBRE,
-                lastName: infoPerson.APELLIDO,
-                address: infoPerson.DIRECCION,
-                email: infoPerson.Correo,
-                phone: infoPerson.CELULAR,
-                birth: infoPerson.NACIMIENTO
-            }
+                    // Traer informacion de la tabla persona
+                    // const infoPerson = await db.specificData('persona', 'id_persona', user.id);
+                    const infoPerson = await db.userProfile(user.USER_AUTH);
+                    console.log('infoPerson (controller): ',infoPerson)
+                    // const information = {
+                    //     id: infoPerson.ID_PERSONA,
+                    //     identity: infoPerson.IDENTIFICACION,
+                    //     state: userfound.ESTADO_USUARIO,
+                    //     name: infoPerson.NOMBRE,
+                    //     lastName: infoPerson.APELLIDO,
+                    //     address: infoPerson.DIRECCION,
+                    //     email: infoPerson.Correo,
+                    //     phone: infoPerson.CELULAR,
+                    //     birth: infoPerson.NACIMIENTO
+                    // }
+                    // resolve(information);
+                    resolve(infoPerson);
+                } catch (error) {
+                    reject(error)
+                }
+
+            })
         })
     }
 
@@ -137,7 +154,7 @@ export function methods(dbInyected) {
         const ident = user.IDENT_AUTH;
         const userFound = await db.userProfile(ident);
 
-        if(!userFound) {return null}
+        if (!userFound) { return null }
 
         // -- testing
         console.log('userFound :>> ', userFound);

@@ -137,7 +137,7 @@ const query = async (table, field, ask) => {
 // Obtener todos los datos del usuario que se ha logueado.
 const userProfile = async (ident) => {
     const result = await new Promise((resolve, reject) => {
-        pool.query(`SELECT * FROM PERSONA JOIN USUARIO ON PERSONA.ID_PERSONA = USUARIO.ID_USUARIO WHERE PERSONA.IDENTIFICACION = ?`, ident, (error, result) => {
+        pool.query(`SELECT PERSONA.*, USUARIO.*, REGISTRO_ROL.*, ROL.NOMBRE_ROL FROM PERSONA JOIN USUARIO ON PERSONA.ID_PERSONA = USUARIO.ID_USUARIO JOIN REGISTRO_ROL ON USUARIO.FK_ID_REGISTRO_ROL = REGISTRO_ROL.ID_REGISTRO_ROL JOIN ROL ON REGISTRO_ROL.FK_ID_ROL = ROL.ID_ROL WHERE PERSONA.IDENTIFICACION = ?`, ident, (error, result) => {
             return error ? reject(error) : resolve(result);
         });
     });
@@ -154,7 +154,8 @@ const userProfile = async (ident) => {
             email: userFound.CORREO,
             state: userFound.ESTADO_USUARIO,
             birth: userFound.NACIMIENTO,
-            role: userFound.FK_ID_REGISTRO_ROL
+            role: userFound.NOMBRE_ROL,
+            dateRole: userFound.FECHA_HORA_REGISTRO_ROL
         }
 
         return profileUser;
