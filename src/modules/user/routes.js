@@ -18,7 +18,6 @@ const allData = async (req, res, next) => {
 const allUsers = async (req, res, next) => {
     try {
         const items = await ctrl.allUsers();
-        console.log(items);
         succes(req, res, items, 200);
     } catch (error) {
         next(err);

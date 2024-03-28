@@ -63,7 +63,7 @@ const allData = (table) => {
 // Traer todos los usuarios
 const allUsers = async () => {
     const result = await new Promise((resolve, reject) => {
-        pool.query(`SELECT PERSONA.*, USUARIO.*, REGISTRO_ROL.*, ROL.NOMBRE_ROL FROM PERSONA JOIN USUARIO ON PERSONA.ID_PERSONA = USUARIO.ID_USUARIO JOIN REGISTRO_ROL ON USUARIO.FK_ID_REGISTRO_ROL = REGISTRO_ROL.ID_REGISTRO_ROL JOIN ROL ON REGISTRO_ROL.FK_ID_ROL = ROL.ID_ROL`, (error, result) => {
+        pool.query(`SELECT PERSONA.*, USUARIO.*, REGISTRO_ROL.*, ROL.NOMBRE_ROL, DATE_FORMAT(PERSONA.NACIMIENTO, '%Y-%m-%d') AS BIRTH FROM PERSONA JOIN USUARIO ON PERSONA.ID_PERSONA = USUARIO.ID_USUARIO JOIN REGISTRO_ROL ON USUARIO.FK_ID_REGISTRO_ROL = REGISTRO_ROL.ID_REGISTRO_ROL JOIN ROL ON REGISTRO_ROL.FK_ID_ROL = ROL.ID_ROL`, (error, result) => {
             return error ? reject(error) : resolve(result);
         });
     });
@@ -81,7 +81,7 @@ const allUsers = async () => {
             phone: userFound.CELULAR,
             email: userFound.CORREO,
             state: userFound.ESTADO_USUARIO,
-            birth: userFound.NACIMIENTO,
+            birth: userFound.BIRTH,
             role: userFound.NOMBRE_ROL,
             dateRole: userFound.FECHA_HORA_REGISTRO_ROL
         }));
@@ -271,7 +271,7 @@ const insertPersonData = async (table, data) => {
             nombre: data.name,
             apellido: data.lastName,
             celular: data.phone,
-            direccion: 'Direccion no ingresada',
+            direccion: 'N/A',
             CORREO: data.email,
             NACIMIENTO: data.birth
         }
