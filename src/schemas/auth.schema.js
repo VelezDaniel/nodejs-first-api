@@ -93,7 +93,7 @@ const userSchema = z.object({
 })
 
 export const loginSchema = z.object({
-  user: z.string({
+  identity: z.string({
     required_error: 'Identificacion requerida'
   }),
   password: z.string({

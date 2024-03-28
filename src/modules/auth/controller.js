@@ -36,9 +36,9 @@ export function methods(dbInyected) {
         return data;
     }
 
-    const login = async (user, password) => {
+    const login = async (identity, password) => {
         try {
-            const data = await db.query(TABLE, FIELD, user);
+            const data = await db.query(TABLE, FIELD, identity);
 
             if (!data) {
                 throw new Error('User not found');

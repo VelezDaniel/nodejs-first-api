@@ -35,7 +35,7 @@ async function specificData(req, res, next) {
 
 async function login(req, res, next) {
     try {
-        const {token, userProfile} = await ctrl.login(req.body.user, req.body.password);
+        const {token, userProfile} = await ctrl.login(req.body.identity, req.body.password);
         res.cookie('token', token, { sameSite: 'None', secure: true });
         console.log(token, userProfile);
         succes(req, res, userProfile, 200);
