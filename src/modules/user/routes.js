@@ -5,6 +5,7 @@ import checkAuth from "../../auth/security.js";
 
 const router = Router();
 
+// ! no usado
 const allData = async (req, res, next) => {
     try {
         const items = await ctrl.allData();
@@ -13,6 +14,16 @@ const allData = async (req, res, next) => {
         next(err);
     }
 };
+
+const allUsers = async (req, res, next) => {
+    try {
+        const items = await ctrl.allUsers();
+        console.log(items);
+        succes(req, res, items, 200);
+    } catch (error) {
+        next(err);
+    }
+}
 
 async function specificData(req, res, next) {
     try {
@@ -59,7 +70,7 @@ async function deleteDataBody(req, res, next) {
     }
 };
 
-router.get('/', allData);
+router.get('/', allUsers);
 router.get('/:id', specificData);
 // Añadir un usuario que no ha sido registrado antes como usuario
 router.post('/', addData);

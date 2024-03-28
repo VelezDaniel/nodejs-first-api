@@ -52,6 +52,49 @@ const allData = (table) => {
     });
 }
 
+// const allUsers = () => {
+//     return new Promise((resolve, reject) => {
+//         pool.query(`SELECT PERSONA.*, USUARIO.* FROM PERSONA JOIN USUARIO ON PERSONA.ID_PERSONA = USUARIO.ID_USUARIO`, (error, result) => {
+//             return error ? reject(error) : resolve(result);
+//         });
+//     });
+// }
+
+// Traer todos los usuarios
+const allUsers = async () => {
+    const result = await new Promise((resolve, reject) => {
+        pool.query(`SELECT PERSONA.*, USUARIO.*, REGISTRO_ROL.*, ROL.NOMBRE_ROL FROM PERSONA JOIN USUARIO ON PERSONA.ID_PERSONA = USUARIO.ID_USUARIO JOIN REGISTRO_ROL ON USUARIO.FK_ID_REGISTRO_ROL = REGISTRO_ROL.ID_REGISTRO_ROL JOIN ROL ON REGISTRO_ROL.FK_ID_ROL = ROL.ID_ROL`, (error, result) => {
+            return error ? reject(error) : resolve(result);
+        });
+    });
+
+    console.log('result from allUsers: ')
+    console.log(result);
+
+    if (result.length > 0) {
+        const users = result.map(userFound => ({
+            id: userFound.ID_PERSONA,
+            identity: userFound.IDENTIFICACION,
+            name: userFound.NOMBRE,
+            lastName: userFound.APELLIDO,
+            address: userFound.DIRECCION,
+            phone: userFound.CELULAR,
+            email: userFound.CORREO,
+            state: userFound.ESTADO_USUARIO,
+            birth: userFound.NACIMIENTO,
+            role: userFound.NOMBRE_ROL,
+            dateRole: userFound.FECHA_HORA_REGISTRO_ROL
+        }));
+        
+        // Retorna arreglo de objetos con cada usuario
+        return users;
+
+    } else {
+        return [];
+    }
+    // return result.length > 0 ? result[0] : null;
+}
+
 // Mostrar un dato especifico
 const specificData = (table, field, id) => {
     return new Promise((resolve, reject) => {
@@ -295,6 +338,7 @@ const registerClient = async (table, field, data) => {
 
 export const methods = {
     allData,
+    allUsers,
     specificData,
     addData,
     updateDataNew,

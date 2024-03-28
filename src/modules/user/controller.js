@@ -13,6 +13,10 @@ export function methods(dbInyected) {
         return db.allData(TABLE);
     }
 
+    const allUsers = () => {
+        return db.allUsers();
+    }
+
     const specificData = (id) => {
         return db.specificData(TABLE, FIELD, id);
     }
@@ -44,6 +48,7 @@ export function methods(dbInyected) {
 
     return {
         allData,
+        allUsers,
         specificData,
         addData,
         deleteDataBody,
