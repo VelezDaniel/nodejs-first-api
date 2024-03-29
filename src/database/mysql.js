@@ -31,14 +31,14 @@ createPool();
 //         }
 //     });
 
-    // connection.on('error', err => {
-    //     console.log('[DB error]', err);
-    //     if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-    //         connectionMysql();
-    //     } else {
-    //         throw err;
-    //     }
-    // });
+// connection.on('error', err => {
+//     console.log('[DB error]', err);
+//     if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+//         connectionMysql();
+//     } else {
+//         throw err;
+//     }
+// });
 // }
 
 // connectionMysql();
@@ -85,7 +85,7 @@ const allUsers = async () => {
             role: userFound.NOMBRE_ROL,
             dateRole: userFound.FECHA_HORA_REGISTRO_ROL
         }));
-        
+
         // Retorna arreglo de objetos con cada usuario
         return users;
 
@@ -221,8 +221,9 @@ const getPersonData = async (table, field, data) => {
 }
 
 // En caso de ya existir los datos del usuario se acualiza la tabla persona y se guardan los datos que hayan cambiado, excepto identificacion, id, fecha de nacimiento.
-const updateInsertPersonData = async (table, field, data, existingPerson) => {
+const updateInsertPersonData = async (table, field, data, existingPerson, isUser) => {
     const information = existingPerson[0];
+    let showInfo
     console.log(information);
 
     const infoData = {
@@ -258,8 +259,12 @@ const updateInsertPersonData = async (table, field, data, existingPerson) => {
         }
     };
 
-    const showInfo = await insertData("usuario", userData);
-    console.log(showInfo);
+    if (isUser) {
+        showInfo = await updateDataNew("usuario", "id_usuario", userData);
+    } else {
+        showInfo = await insertData("usuario", userData);
+    }
+    console.log('showInfo: ',showInfo)
     return returnResult;
 }
 
@@ -306,26 +311,43 @@ const insertPersonData = async (table, data) => {
 // Methodo principal para registro de usuarios.
 const registerClient = async (table, field, data) => {
     try {
+        let existingUser;
+        let existingAuth;
+        let isUser = false;
         const existingPerson = await getPersonData(table, 'IDENTIFICACION', data);
-        console.log(existingPerson);
-        const existingUser = await specificData('auth', 'user_auth', data.identity);
-        console.log('existingUser: ',existingUser);
+        console.log('ExistingPerson: ', existingPerson);
+        if (existingPerson.length > 0) {
+            existingUser = await specificData('usuario', 'id_usuario', existingPerson[0].ID_PERSONA);
+            console.log('existingUser: ', existingUser);
+            existingAuth = await specificData('auth', 'user_auth', data.identity);
+            console.log('existingAuth: ', existingAuth);
+        }
         let result;
         let preReturnResult;
         let idInserted;
-        let returnResult
+        let returnResult;
 
         //  ! REVISAR
-        if (existingUser[0].PASS_AUTH != '') {
+        if (existingAuth && existingAuth[0].PASS_AUTH != '') {
             return false;
         } else {
-            if (existingPerson.length > 0) {
-                result = await updateInsertPersonData(table, field, data, existingPerson);
+            if (existingPerson.length > 0 && existingUser.length < 1) {
+
+                result = await updateInsertPersonData(table, field, data, existingPerson, isUser);
                 idInserted = result.insertId;
                 preReturnResult = await specificData(table, field, idInserted)
                 returnResult = {
                     id: preReturnResult[0].IDENTIFICACION,
                     name: preReturnResult[0].NOMBRE
+                }
+            } else if (existingPerson.length > 0 && existingUser.length > 0 && existingAuth[0].PASS_AUTH === '') {
+                isUser = true;
+                result = await updateInsertPersonData(table, field, data, existingPerson, isUser);
+                idInserted = result.insertId;
+                preReturnResult = await specificData(table, field, idInserted);
+                returnResult = {
+                    id: existingPerson[0].IDENTIFICACION,
+                    name: existingPerson[0].NOMBRE,
                 }
             } else {
                 result = await insertPersonData(table, data);
@@ -337,8 +359,8 @@ const registerClient = async (table, field, data) => {
                 }
             }
             console.log(result);
-            console.log('preReturnResult: ',preReturnResult)
-            console.log('returnResult: ',returnResult);
+            console.log('preReturnResult: ', preReturnResult)
+            console.log('returnResult: ', returnResult);
             return returnResult;
         }
 
