@@ -100,6 +100,7 @@ export function methods(dbInyected) {
             //     return db.updateDataNew(TABLE, FIELD, authData);
             // } else { throw new Error('Action denied'); }
             return db.updateDataNew(TABLE, FIELD, authData);
+            
         } else {
             if (method === 'PATCH') { return db.updateDataNew(TABLE, FIELD2, authData); }
             else {

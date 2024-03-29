@@ -65,6 +65,10 @@ async function deleteDataBody(req, res, next) {
 async function registerClient(req, res) {
     try {
         const items = await ctrl.registerClient(req.body);
+        console.log(items);
+        // const resultItems = {
+        //     user: items.body,
+        // }
         if (items === false) {
             res.status(409).json(["El usuario ya existe"]);
         } else {
@@ -80,6 +84,7 @@ router.get('/', allData);
 router.get('/:id', specificData);
 // router.post('/', addData);
 router.post('/', validateSchema(registerSchema), registerClient);
+router.post('/complete', registerClient)
 router.delete('/:id', deleteData);
 router.delete('/', deleteDataBody);
 

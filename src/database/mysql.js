@@ -271,7 +271,7 @@ const insertPersonData = async (table, data) => {
             nombre: data.name,
             apellido: data.lastName,
             celular: data.phone,
-            direccion: 'N/A',
+            direccion: data.address || 'N/A',
             CORREO: data.email,
             NACIMIENTO: data.birth
         }
@@ -309,25 +309,36 @@ const registerClient = async (table, field, data) => {
         const existingPerson = await getPersonData(table, 'IDENTIFICACION', data);
         console.log(existingPerson);
         const existingUser = await specificData('auth', 'user_auth', data.identity);
+        console.log('existingUser: ',existingUser);
         let result;
-        let returnResult;
+        let preReturnResult;
         let idInserted;
+        let returnResult
 
         //  ! REVISAR
-        if (existingUser.length > 0) {
+        if (existingUser[0].PASS_AUTH != '') {
             return false;
         } else {
             if (existingPerson.length > 0) {
                 result = await updateInsertPersonData(table, field, data, existingPerson);
                 idInserted = result.insertId;
-                returnResult = await specificData(table, field, idInserted)
+                preReturnResult = await specificData(table, field, idInserted)
+                returnResult = {
+                    id: preReturnResult[0].IDENTIFICACION,
+                    name: preReturnResult[0].NOMBRE
+                }
             } else {
                 result = await insertPersonData(table, data);
                 idInserted = result.insertId;
-                returnResult = await specificData(table, field, idInserted);
+                preReturnResult = await specificData(table, field, idInserted);
+                returnResult = {
+                    id: preReturnResult[0].IDENTIFICACION,
+                    name: preReturnResult[0].NOMBRE
+                }
             }
             console.log(result);
-            console.log(returnResult);
+            console.log('preReturnResult: ',preReturnResult)
+            console.log('returnResult: ',returnResult);
             return returnResult;
         }
 
