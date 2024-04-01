@@ -44,7 +44,7 @@ const addData = async (req, res, next) => {
     }
 };
 
-async function deleteData(req, res,) {
+async function deleteData(req, res) {
     try {
         const items = await ctrl.deleteData(req.params.id);
         succes(req, res, items, 200);

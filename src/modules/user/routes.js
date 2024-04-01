@@ -5,15 +5,15 @@ import checkAuth from "../../auth/security.js";
 
 const router = Router();
 
-// ! no usado
-const allData = async (req, res, next) => {
-    try {
-        const items = await ctrl.allData();
-        succes(req, res, items, 200);
-    } catch (err) {
-        next(err);
-    }
-};
+// // ! no usado
+// const allData = async (req, res, next) => {
+//     try {
+//         const items = await ctrl.allData();
+//         succes(req, res, items, 200);
+//     } catch (err) {
+//         next(err);
+//     }
+// };
 
 const allUsers = async (req, res, next) => {
     try {
@@ -36,12 +36,12 @@ async function specificData(req, res, next) {
 const addData = async (req, res, next) => {
     let message;
     try {
-        if(req.body.id > 0){
+        if (req.body.id > 0) {
             const items = await ctrl.addData(req.body, req.method);
             message = 'Data save succesfully';
         } else {
             message = 'Bad request. Try Again';
-            throw new Error({message: "Invalid ID"});
+            throw new Error({ message: "Invalid ID" });
         }
         succes(req, res, message, 201);
     } catch (err) {
@@ -68,6 +68,7 @@ async function deleteDataBody(req, res, next) {
         // next() -- Express fun
     }
 };
+
 
 router.get('/', allUsers);
 router.get('/:id', specificData);

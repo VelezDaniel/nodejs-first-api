@@ -47,23 +47,19 @@ createPool();
 const allData = (table) => {
     return new Promise((resolve, reject) => {
         pool.query(`SELECT * FROM ${table}`, (error, result) => {
-            return error ? reject(error) : resolve(result);
+            if (error) {
+                reject(error);
+            } else {
+                resolve(result);
+            }
         });
     });
 }
 
-// const allUsers = () => {
-//     return new Promise((resolve, reject) => {
-//         pool.query(`SELECT PERSONA.*, USUARIO.* FROM PERSONA JOIN USUARIO ON PERSONA.ID_PERSONA = USUARIO.ID_USUARIO`, (error, result) => {
-//             return error ? reject(error) : resolve(result);
-//         });
-//     });
-// }
-
 // Traer todos los usuarios
 const allUsers = async () => {
     const result = await new Promise((resolve, reject) => {
-        pool.query(`SELECT PERSONA.*, USUARIO.*, REGISTRO_ROL.*, ROL.NOMBRE_ROL, DATE_FORMAT(PERSONA.NACIMIENTO, '%Y-%m-%d') AS BIRTH FROM PERSONA JOIN USUARIO ON PERSONA.ID_PERSONA = USUARIO.ID_USUARIO JOIN REGISTRO_ROL ON USUARIO.FK_ID_REGISTRO_ROL = REGISTRO_ROL.ID_REGISTRO_ROL JOIN ROL ON REGISTRO_ROL.FK_ID_ROL = ROL.ID_ROL`, (error, result) => {
+        pool.query(`SELECT PERSONA.*, USUARIO.*, REGISTRO_ROL.*, ROL.NOMBRE_ROL, DATE_FORMAT(PERSONA.NACIMIENTO, '%Y-%m-%d') AS BIRTH, DATE_FORMAT(REGISTRO_ROL.FECHA_HORA_REGISTRO_ROL, '%Y-%m-%d %H:%i:%s') AS FECHA_ROL FROM PERSONA JOIN USUARIO ON PERSONA.ID_PERSONA = USUARIO.ID_USUARIO JOIN REGISTRO_ROL ON USUARIO.FK_ID_REGISTRO_ROL = REGISTRO_ROL.ID_REGISTRO_ROL JOIN ROL ON REGISTRO_ROL.FK_ID_ROL = ROL.ID_ROL`, (error, result) => {
             return error ? reject(error) : resolve(result);
         });
     });
@@ -83,7 +79,7 @@ const allUsers = async () => {
             state: userFound.ESTADO_USUARIO,
             birth: userFound.BIRTH,
             role: userFound.NOMBRE_ROL,
-            dateRole: userFound.FECHA_HORA_REGISTRO_ROL
+            dateRole: userFound.FECHA_ROL
         }));
 
         // Retorna arreglo de objetos con cada usuario
