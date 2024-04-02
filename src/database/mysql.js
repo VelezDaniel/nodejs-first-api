@@ -78,6 +78,7 @@ const allUsers = async () => {
             email: userFound.CORREO,
             state: userFound.ESTADO_USUARIO,
             birth: userFound.BIRTH,
+            idUserRole: userFound.FK_ID_ROL,
             role: userFound.NOMBRE_ROL,
             dateRole: userFound.FECHA_ROL
         }));
