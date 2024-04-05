@@ -35,7 +35,6 @@ export function methods(dbInyected) {
         } else {
             return db.insertData(TABLE, data);
         }
-        // return db.addData(TABLE, data);
     }
 
     function deleteData(id) {

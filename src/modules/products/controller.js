@@ -10,7 +10,7 @@ export function methods(dbInyected) {
     }
 
     const allData = () => {
-        return db.allData(TABLE);
+        return db.allProducts(TABLE);
     }
 
     const addData = (body) => {
@@ -20,9 +20,8 @@ export function methods(dbInyected) {
                 nombre_producto: body.name,
                 descripcion_producto: body.description,
                 precio_unitario: body.price,
-                estado_producto: body.state,
+                estado_producto: body.state || 'Disponible',
                 fk_tipo_producto: body.type,
-                fk_id_tamano: body.size
             }
         }
         return db.addData(TABLE, FIELD, data);

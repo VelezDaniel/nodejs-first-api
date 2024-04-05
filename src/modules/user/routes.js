@@ -75,8 +75,8 @@ router.get('/:id', specificData);
 // Añadir un usuario que no ha sido registrado antes como usuario
 router.post('/', addData);
 // Cuando el usuario registrado desee actualizar sus datos
-router.patch('/', checkAuth(), addData);
+router.patch('/', addData);
 router.delete('/:id', deleteData);
-router.delete('/', checkAuth(), deleteDataBody);
+router.delete('/', deleteDataBody);
 
 export default router;

@@ -1,6 +1,7 @@
 // import { methods as db } from "../../database/mysql";
 const TABLE = 'ROL';
 const FIELD = 'ID_ROL';
+const TABLE2 = 'REGISTRO_ROL';
 export function methods(dbInyected) {
 
     let db = dbInyected;
@@ -36,9 +37,22 @@ export function methods(dbInyected) {
             console.error('Error al obtener roles:', error);
             throw error;
         }
-    }    
+    }
+
+    const insertRegisterRole = async (body) => {
+        const data = {
+            id: body.idRole,
+            info: {
+                FK_ID_ROL: body.idRole
+            }
+        }
+
+        return db.insertData(TABLE2, data);
+        
+    }
 
     return {
         allData,
+        insertRegisterRole,
     }
 }

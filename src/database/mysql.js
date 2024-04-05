@@ -56,6 +56,34 @@ const allData = (table) => {
     });
 }
 
+const allProducts = async (table) => {
+    const result = await new Promise((resolve, reject) => {
+        pool.query(`SELECT ${table}.*, TIPO_PRODUCTO.NOMBRE_TIPO_PRODUCTO FROM ${table} JOIN TIPO_PRODUCTO ON ${table}.FK_TIPO_PRODUCTO = TIPO_PRODUCTO.ID_TIPO_PRODUCTO`, (error, result) => {
+            return error ? reject(error) : resolve(result);
+        });
+    });
+
+    console.log('products from backend: ', result);
+    if (result.length > 0) {
+        const products = result.map(productFound => ({
+            id: productFound.ID_PRODUCTO,
+            name: productFound.NOMBRE_PRODUCTO,
+            description: productFound.DESCRIPCION_PRODUCTO,
+            price: productFound.PRECIO_UNITARIO,
+            state: productFound.ESTADO_PRODUCTO,
+            rank: productFound.RANGO,
+            productSize: productFound.TAMANO,
+            productType: productFound.NOMBRE_TIPO_PRODUCTO,
+        }));
+
+        // Retorna arreglo de objetos con cada usuario
+        return products;
+
+    } else {
+        return [];
+    }
+}
+
 // Traer todos los usuarios
 const allUsers = async () => {
     const result = await new Promise((resolve, reject) => {
@@ -194,6 +222,7 @@ const userProfile = async (ident) => {
             email: userFound.CORREO,
             state: userFound.ESTADO_USUARIO,
             birth: userFound.NACIMIENTO,
+            idRole: userFound.FK_ID_ROL,
             role: userFound.NOMBRE_ROL,
             dateRole: userFound.FECHA_HORA_REGISTRO_ROL
         }
@@ -375,6 +404,7 @@ export const methods = {
     insertData,
     deleteData,
     deleteDataBody,
+    allProducts,
     query,
     userProfile,
     registerClient

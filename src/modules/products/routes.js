@@ -1,7 +1,8 @@
 import { Router, json } from "express";
 import { succes, error } from '../../network/response.js'
 import ctrl from './index.js';
-import checkAuth from "../../auth/security.js";
+// checkAuth sirve para la validacion del token hecho con BEARER
+// import checkAuth from "../../auth/security.js";
 // import { utilities as authIndex } from "../../auth/index.js";
 
 const router = Router();
@@ -67,8 +68,8 @@ async function deleteData(req, res,) {
 
 router.get('/', allData);
 router.get('/:id', specificData);
-router.post('/', checkAuth(), addData);
-router.delete('/:id', checkAuth(), deleteData);
+router.post('/', addData);
+router.delete('/:id', deleteData);
 // router.delete('/', deleteDataBody);
 
 export default router;

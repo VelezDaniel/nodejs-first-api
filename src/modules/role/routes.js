@@ -7,17 +7,26 @@ import ctrl from './index.js';
 
 const router = Router();
 
-async function getRoles(req, res,) {
+async function getRoles(req, res) {
     try {
         const items = await ctrl.allData();
-        succes(res, res, items, 200);
+        succes(req, res, items, 200);
     } catch (err) {
         console.log('error: ', err);
-        error(res, res, err, 500);
+        error(req, res, err, 500);
+    }
+}
+
+async function insertRegisterRole(req, res) {
+    try {
+        const result = await ctrl.insertRegisterRole(req.body)
+        succes(req, res, result, 200);
+    } catch (err) {
+        console.log('Error in routes:  ', err);
     }
 }
 
 router.get('/', getRoles);
-
+router.post('/', insertRegisterRole);
 export default router;
 
