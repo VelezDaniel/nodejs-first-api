@@ -55,20 +55,11 @@ async function deleteData(req, res,) {
     }
 };
 
-// async function deleteDataBody(req, res, next) {
-//     try {
-//         const items = await ctrl.deleteDataBody(req.body);
-//         succes(req, res, 'Information deleted succesfully', 200);
-//     } catch (err) {
-//         next(err);
-//         // next() -- Express fun
-//     }
-// };
 
-router.get('/', checkAuth(), allData);
-router.get('/:id', checkAuth(), specificData);
-router.post('/', checkAuth(), addData);
-router.delete('/:id', checkAuth(), deleteData);
+router.get('/', allData);
+router.get('/:id', specificData);
+router.post('/', addData);
+router.delete('/:id', deleteData);
 
 export default router;
 

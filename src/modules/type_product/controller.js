@@ -9,8 +9,16 @@ export function methods(dbInyected) {
         db = require('../../database/mysql.js');
     }
 
-    const allData = () => {
-        return db.allData(TABLE);
+    const allData = async () => {
+        const results = await db.allData(TABLE);
+        if(results.length > 0) {
+            const allTypes = results.map(productType => ({
+                idProductType: productType.ID_TIPO_PRODUCTO,
+                nameProductType: productType.NOMBRE_TIPO_PRODUCTO,
+            }));
+            return allTypes;
+
+        } else {return [];}
     }
 
     const addData = (body) => {
