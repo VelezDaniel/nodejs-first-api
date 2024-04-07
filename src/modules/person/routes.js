@@ -83,7 +83,7 @@ async function registerClient(req, res) {
 
 router.get('/', allData);
 router.get('/:id', specificData);
-router.post('/', addData);
+router.patch('/', addData);
 router.post('/', validateSchema(registerSchema), registerClient);
 router.post('/complete', registerClient)
 router.delete('/:id', deleteData);
