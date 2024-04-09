@@ -17,11 +17,13 @@ export function methods(dbInyected) {
         let data = {
             id: body.id,
             info: {
-                nombre_producto: body.name,
+                nombre_producto: body.nameProduct,
                 descripcion_producto: body.description,
                 precio_unitario: body.price,
-                estado_producto: body.state || 'Disponible',
-                fk_tipo_producto: body.type,
+                estado_producto: body.state || 'DISPONIBLE',
+                rango: body.rank || '4.0',
+                tamano: body.productSize,
+                tipo_producto: body.productType,
             }
         }
         return db.addData(TABLE, FIELD, data);
@@ -35,15 +37,10 @@ export function methods(dbInyected) {
         return db.deleteData(TABLE, FIELD, id);
     }
 
-    const deleteDataBody = (body) => {
-        return db.deleteDataBody(TABLE, FIELD, body);
-    }
-
     return {
         allData,
         specificData,
         addData,
-        deleteDataBody,
         deleteData
     }
 }

@@ -58,7 +58,7 @@ const allData = (table) => {
 
 const allProducts = async (table) => {
     const result = await new Promise((resolve, reject) => {
-        pool.query(`SELECT ${table}.*, TIPO_PRODUCTO.NOMBRE_TIPO_PRODUCTO FROM ${table} JOIN TIPO_PRODUCTO ON ${table}.FK_TIPO_PRODUCTO = TIPO_PRODUCTO.ID_TIPO_PRODUCTO`, (error, result) => {
+        pool.query(`SELECT * FROM ${table}`, (error, result) => {
             return error ? reject(error) : resolve(result);
         });
     });
@@ -73,7 +73,7 @@ const allProducts = async (table) => {
             state: productFound.ESTADO_PRODUCTO,
             rank: productFound.RANGO,
             productSize: productFound.TAMANO,
-            productType: productFound.NOMBRE_TIPO_PRODUCTO,
+            productType: productFound.TIPO_PRODUCTO,
         }));
 
         // Retorna arreglo de objetos con cada usuario
