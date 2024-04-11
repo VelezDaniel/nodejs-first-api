@@ -7,6 +7,7 @@ import users from './modules/user/routes.js';
 import auth from './modules/auth/routes.js';
 import role from './modules/role/routes.js';
 import products from './modules/products/routes.js';
+import aditions from './modules/aditions/routes.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
@@ -34,6 +35,7 @@ app.use('/api/users', users);
 app.use('/api/auth', auth);
 app.use('/api/roles', role);
 app.use('/api/products', products);
+app.use('/api/aditions', aditions);
 app.use(errors); 
 
 export default app;
