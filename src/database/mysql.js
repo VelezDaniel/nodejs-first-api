@@ -120,6 +120,18 @@ const allUsers = async () => {
     // return result.length > 0 ? result[0] : null;
 }
 
+const allBookings = (table) => {
+    return new Promise((resolve, reject) => {
+        pool.query(`SELECT ${table}.*, PERSONA.ID_PERSONA, PERSONA.IDENTIFICACION, CONCAT(PERSONA.NOMBRE, ' ', PERSONA.APELLIDO) AS NOMBRE_COMPLETO, DATE_FORMAT(${table}.FECHA_RESERVACION, '%Y-%m-%d') AS FECHA FROM ${table} JOIN PERSONA ON ${table}.FK_ID_PERSONA = PERSONA.ID_PERSONA`, (error, result) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+}
+
 // Mostrar un dato especifico
 const specificData = (table, field, id) => {
     return new Promise((resolve, reject) => {
@@ -398,13 +410,14 @@ const registerClient = async (table, field, data) => {
 export const methods = {
     allData,
     allUsers,
+    allProducts,
+    allBookings,
     specificData,
     addData,
     updateDataNew,
     insertData,
     deleteData,
     deleteDataBody,
-    allProducts,
     query,
     userProfile,
     registerClient

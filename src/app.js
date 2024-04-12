@@ -8,6 +8,8 @@ import auth from './modules/auth/routes.js';
 import role from './modules/role/routes.js';
 import products from './modules/products/routes.js';
 import aditions from './modules/aditions/routes.js';
+import bookings from './modules/bookings/routes.js';
+import flavors from './modules/flavors/routes.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
@@ -36,6 +38,8 @@ app.use('/api/auth', auth);
 app.use('/api/roles', role);
 app.use('/api/products', products);
 app.use('/api/aditions', aditions);
+app.use('/api/bookings', bookings);
+app.use('/api/flavors', flavors);
 app.use(errors); 
 
 export default app;
