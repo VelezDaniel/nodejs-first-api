@@ -16,12 +16,32 @@ export function methods(dbInyected) {
                 const bookings = results.map(result => ({
                     id: result.ID_RESERVACION,
                     attendees: result.NUMERO_ASISTENTES,
-                    date: result.FECHA,
-                    start: result.HORA_INICIO,
-                    end: result.HORA_FIN,
+                    datetime: result.FECHA_RESERVACION,
+                    description: result.DESCRIPCION_RESERVA,
+                    hiddenDescription: result.DESCRIPCION_OCULTA,
                     idClient: result.ID_PERSONA,
                     identityClient: result.IDENTIFICACION,
                     nameClient: result.NOMBRE_COMPLETO,
+                }));
+                return bookings;
+            } else {
+                throw new Error('No se obtuvieron datos de la tabla seleccionada');
+            }
+        } catch (error) {
+            console.log('error in bookings BK: ', error)
+        }
+    }
+
+    const userAllBooks = async () => {
+        try {
+            const results = await db.userBookings(TABLE);
+            if (Array.isArray(results)) {
+                const bookings = results.map(result => ({
+                    id: result.ID_RESERVACION,
+                    attendees: result.NUMERO_ASISTENTES,
+                    dateBook: result.FECHA_RESERVACION,
+                    timeBook: result.HORA_RESERVACION,
+                    description: result.DESCRIPCION_RESERVA,
                 }));
                 return bookings;
             } else {
@@ -37,10 +57,11 @@ export function methods(dbInyected) {
             id: body.id,
             info: {
                 NUMERO_ASISTENTES: body.attendees,
-                FECHA_RESERVACION: body.date,
-                HORA_INICIO: body.start,
-                HORA_FIN: body.end,
-                FK_ID_PERSONA: body.idClient,
+                FECHA_RESERVACION: body.dateBook,
+                HORA_RESERVACION: body.timeBook,
+                DESCRIPCION_RESERVA: body.description,
+                DESCRIPCION_OCULTA: body.hiddenDescription || null,
+                FK_ID_USUARIO: body.idClient || null,
             }
         }
         return db.addData(TABLE, FIELD, data);
@@ -56,6 +77,7 @@ export function methods(dbInyected) {
 
     return {
         allData,
+        userAllBooks,
         specificData,
         addData,
         deleteData

@@ -13,6 +13,15 @@ const allData = async (req, res, next) => {
     }
 };
 
+const userBooks = async (req, res, next) => {
+    try {
+        const items = await ctrl.userAllBooks(req.params.id);
+        succes(req, res, items, 200);
+    } catch (err) {
+        next(err);
+    }
+};
+
 async function specificData(req, res) {
     try {
         if(!req.params.id) {
@@ -56,6 +65,8 @@ async function deleteData(req, res,) {
 
 router.get('/', allData);
 router.get('/:id', specificData);
+// router.get('/userBooks', userBooks);
+router.get('/userBooks/:id', userBooks);
 router.post('/', addData);
 router.delete('/:id', deleteData);
 

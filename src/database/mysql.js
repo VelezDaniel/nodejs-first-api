@@ -122,7 +122,19 @@ const allUsers = async () => {
 
 const allBookings = (table) => {
     return new Promise((resolve, reject) => {
-        pool.query(`SELECT ${table}.*, PERSONA.ID_PERSONA, PERSONA.IDENTIFICACION, CONCAT(PERSONA.NOMBRE, ' ', PERSONA.APELLIDO) AS NOMBRE_COMPLETO, DATE_FORMAT(${table}.FECHA_RESERVACION, '%Y-%m-%d') AS FECHA FROM ${table} JOIN PERSONA ON ${table}.FK_ID_PERSONA = PERSONA.ID_PERSONA`, (error, result) => {
+        pool.query(`SELECT ${table}.*, PERSONA.ID_PERSONA, PERSONA.IDENTIFICACION, CONCAT(PERSONA.NOMBRE, ' ', PERSONA.APELLIDO) AS NOMBRE_COMPLETO, DATE_FORMAT(${table}.FECHA_RESERVACION, '%Y-%m-%d') AS FECHA FROM ${table} JOIN PERSONA ON ${table}.FK_ID_USUARIO = PERSONA.ID_PERSONA`, (error, result) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+}
+
+const userBookings = (table, userId) => {
+    return new Promise((resolve, reject) => {
+        pool.query(`SELECT ${table}.ID_RESERVACION, ${table}.NUMERO_ASISTENTES, ${table}.HORA_RESERVACION, ${table}.DESCRIPCION_RESERVA, DATE_FORMAT(${table}.FECHA_RESERVACION, '%Y-%m-%d') AS FECHA FROM ${table} WHERE FK_ID_USUARIO = ${userId}`, (error, result) => {
             if (error) {
                 reject(error);
             } else {
@@ -412,6 +424,7 @@ export const methods = {
     allUsers,
     allProducts,
     allBookings,
+    userBookings,
     specificData,
     addData,
     updateDataNew,
