@@ -16,7 +16,8 @@ export function methods(dbInyected) {
                 const bookings = results.map(result => ({
                     id: result.ID_RESERVACION,
                     attendees: result.NUMERO_ASISTENTES,
-                    datetime: result.FECHA_RESERVACION,
+                    dateBook: result.FECHA,
+                    datetime: result.HORA_RESERVACION,
                     description: result.DESCRIPCION_RESERVA,
                     hiddenDescription: result.DESCRIPCION_OCULTA,
                     idClient: result.ID_PERSONA,
@@ -32,14 +33,14 @@ export function methods(dbInyected) {
         }
     }
 
-    const userAllBooks = async () => {
+    const userAllBooks = async (userId) => {
         try {
-            const results = await db.userBookings(TABLE);
+            const results = await db.userBookings(TABLE, userId);
             if (Array.isArray(results)) {
                 const bookings = results.map(result => ({
                     id: result.ID_RESERVACION,
                     attendees: result.NUMERO_ASISTENTES,
-                    dateBook: result.FECHA_RESERVACION,
+                    dateBook: result.FECHA,
                     timeBook: result.HORA_RESERVACION,
                     description: result.DESCRIPCION_RESERVA,
                 }));

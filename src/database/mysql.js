@@ -161,13 +161,9 @@ const updateDataNew = (table, field, data) => {
 
         const query = `UPDATE ${table} SET ${setClause} WHERE ?? = ?`;
         const values = keys.map(key => data.info[key]).concat([field, data.id]);
-
-        // const values = [data.info.identificacion, data.info.nombre, data.info.apellido, data.info.direccion, data.info.celular, field, data.id];
-
         const result = pool.query(query, values, (error, result) => {
             return error ? reject(error) : resolve(result);
         });
-        // console.log(result);
     });
 }
 

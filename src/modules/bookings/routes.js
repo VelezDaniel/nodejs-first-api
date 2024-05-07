@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { succes, error } from '../../network/response.js'
+import checkAuth from "../../auth/security.js";
 import ctrl from './index.js';
 
 const router = Router();
@@ -66,8 +67,9 @@ async function deleteData(req, res,) {
 router.get('/', allData);
 router.get('/:id', specificData);
 // router.get('/userBooks', userBooks);
-router.get('/userBooks/:id', userBooks);
+router.get('/userbooks/:id', userBooks);
 router.post('/', addData);
+router.patch('/', checkAuth(),addData);
 router.delete('/:id', deleteData);
 
 export default router;
