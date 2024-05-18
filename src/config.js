@@ -13,6 +13,6 @@ export default {
         user: process.env.DB_USER || 'root',
         password: process.env.DB_PASSWORD || '',
         database: process.env.DB_NAME || 'helartico',
-        dbPort: process.env.DB_PORT || 3306
+        dbPort: process.env.DB_PORT || 3308
     }
 }
