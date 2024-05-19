@@ -19,10 +19,10 @@ export function methods(dbInyected) {
                     dateBook: result.FECHA,
                     datetime: result.HORA_RESERVACION,
                     description: result.DESCRIPCION_RESERVA,
-                    hiddenDescription: result.DESCRIPCION_OCULTA,
-                    idClient: result.ID_PERSONA,
-                    identityClient: result.IDENTIFICACION,
-                    nameClient: result.NOMBRE_COMPLETO,
+                    hiddenDescription: (result.DESCRIPCION_OCULTA) ? result.DESCRIPCION_OCULTA : 'N/A',
+                    idClient: (result.ID_PERSONA) ? result.ID_PERSONA : '0',
+                    identityClient: (result.IDENTIFICACION) ? result.IDENTIFICACION : '0',
+                    nameClient: (result.NOMBRE_COMPLETO) ? result.NOMBRE_COMPLETO : 'No registrado',
                 }));
                 return bookings;
             } else {

@@ -122,7 +122,7 @@ const allUsers = async () => {
 
 const allBookings = (table) => {
     return new Promise((resolve, reject) => {
-        pool.query(`SELECT ${table}.*, PERSONA.ID_PERSONA, PERSONA.IDENTIFICACION, CONCAT(PERSONA.NOMBRE, ' ', PERSONA.APELLIDO) AS NOMBRE_COMPLETO, DATE_FORMAT(${table}.FECHA_RESERVACION, '%Y-%m-%d') AS FECHA FROM ${table} JOIN PERSONA ON ${table}.FK_ID_USUARIO = PERSONA.ID_PERSONA`, (error, result) => {
+        pool.query(`SELECT ${table}.*, PERSONA.ID_PERSONA, PERSONA.IDENTIFICACION, CONCAT(PERSONA.NOMBRE, ' ', PERSONA.APELLIDO) AS NOMBRE_COMPLETO, DATE_FORMAT(${table}.FECHA_RESERVACION, '%Y-%m-%d') AS FECHA FROM ${table} LEFT JOIN PERSONA ON ${table}.FK_ID_USUARIO = PERSONA.ID_PERSONA`, (error, result) => {
             if (error) {
                 reject(error);
             } else {
