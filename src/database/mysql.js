@@ -74,6 +74,7 @@ const allProducts = async (table) => {
             rank: productFound.RANGO,
             productSize: productFound.TAMANO,
             productType: productFound.TIPO_PRODUCTO,
+            amountBalls: productFound.CANTIDAD_HELADO,
         }));
 
         // Retorna arreglo de objetos con cada usuario

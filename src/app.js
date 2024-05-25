@@ -10,6 +10,7 @@ import products from './modules/products/routes.js';
 import aditions from './modules/aditions/routes.js';
 import bookings from './modules/bookings/routes.js';
 import flavors from './modules/flavors/routes.js';
+import payment from './modules/payment/routes.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
@@ -40,6 +41,7 @@ app.use('/api/products', products);
 app.use('/api/aditions', aditions);
 app.use('/api/bookings', bookings);
 app.use('/api/flavors', flavors);
+app.use('/api/payment', payment);
 app.use(errors); 
 
 export default app;

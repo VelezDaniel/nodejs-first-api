@@ -14,5 +14,10 @@ export default {
         password: process.env.DB_PASSWORD || '',
         database: process.env.DB_NAME || 'helartico',
         dbPort: process.env.DB_PORT || 3306
+    },
+    payment: {
+        paypalApi: 'https://api-m.sandbox.paypal.com',
+        paypalApiClient: process.env.PAYPAL_API_CLIENT,
+        paypalApiKey: process.env.PAYPAL_API_SECRET,
     }
 }
