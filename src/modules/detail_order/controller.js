@@ -31,11 +31,11 @@ export function methods(dbInyected) {
     }
 
     const addData = (body) => {
-        let data = {
+        const data = {
             id: body.id,
             info: {
-                NOMBRE_SABOR: body.nameFlavor,
-                ESTADO_SABOR: body.stateFlavor,
+                CANTIDAD_PRODUCTO: body.quantity,
+                DESCRIPCION_DETALLE: body.stateFlavor,
             }
         }
         return db.addData(TABLE, FIELD, data);
