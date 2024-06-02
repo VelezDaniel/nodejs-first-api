@@ -280,7 +280,7 @@ const updateInsertPersonData = async (table, field, data, existingPerson, isUser
             apellido: data.lastName,
             celular: data.phone,
             direccion: data.address,
-            CORREO: data.email,
+            correo: data.email,
         }
     }
     const returnResult = await updateDataNew(table, field, infoData);
@@ -306,12 +306,26 @@ const updateInsertPersonData = async (table, field, data, existingPerson, isUser
         }
     };
 
-    if (isUser) {
+    if (isUser === true) {
         showInfo = await updateDataNew("usuario", "id_usuario", userData);
     } else {
         showInfo = await insertData("usuario", userData);
     }
-    console.log('showInfo: ',showInfo)
+
+    if (isUser === true && data.password) {
+        pass = await bcrypt.hash(data.password.toString(), 5);
+
+        const authInfo = {
+            id: user.ID_PERSONA,
+            info: {
+                pass_auth: pass
+            }
+        }
+
+        addPassword = await updateDataNew("auth", "id_auth", authInfo);
+    }
+
+    console.log('showInfo: ', showInfo);
     return returnResult;
 }
 
@@ -352,6 +366,19 @@ const insertPersonData = async (table, data) => {
     // Insercion en usuario
     const resultUser = await insertData("USUARIO", userData);
     console.log(resultUser)
+
+    // if (isUser === true && data.password) {
+    //     pass = await bcrypt.hash(data.password.toString(), 5);
+
+    //     const authInfo = {
+    //         id: user.ID_PERSONA,
+    //         info: {
+    //             pass_auth: pass
+    //         }
+    //     }
+
+    //     addPassword = await updateDataNew("auth", "id_auth", authInfo);
+    // }
     return personInfo;
 }
 
@@ -375,7 +402,7 @@ const registerClient = async (table, field, data) => {
         let returnResult;
 
         //  ! REVISAR
-        if (existingAuth && existingAuth[0].PASS_AUTH != '') {
+        if (existingAuth && existingAuth[0].PASS_AUTH !== '') {
             return false;
         } else {
             if (existingPerson.length > 0 && existingUser.length < 1) {
