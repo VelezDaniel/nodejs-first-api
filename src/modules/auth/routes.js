@@ -33,15 +33,20 @@ async function specificData(req, res, next) {
     }
 };
 
-async function login(req, res, next) {
+async function login(req, res) {
     try {
-        const {token, userProfile} = await ctrl.login(req.body.identity, req.body.password);
-        res.cookie('token', token, { sameSite: 'None', secure: true });
-        console.log(token, userProfile);
-        succes(req, res, userProfile, 200);
+        const { status, token, userProfile, message } = await ctrl.login(req.body.identity, req.body.password);
+        if (status === 200) {
+            res.cookie('token', token, { sameSite: 'None', secure: true });
+            console.log(token, userProfile);
+            succes(req, res, userProfile, 200);
+        } else {
+            error(req, res, message, status);
+        }
+
     } catch (err) {
-        const errorsLogin = ['El usuario no existe, ', err];
-        error(req, res, errorsLogin, 404);
+        const errorsLogin = ['Error inesperado, ', err];
+        error(req, res, errorsLogin, 500);
     }
 };
 
@@ -104,13 +109,13 @@ async function verifyToken(req, res, next) {
     try {
         // const item = await
         const token = req.cookies.token;
-        console.log('token from routes: '+ token);
+        console.log('token from routes: ' + token);
         if (!token) { return error(req, res, 'Token not found', 401) }
         const result = await ctrl.verifyToken(token);
         succes(req, res, result, 201);
         // next();
     } catch (error) {
-        console.log('verifyToken function in routes: ',error)
+        console.log('verifyToken function in routes: ', error)
     }
 }
 

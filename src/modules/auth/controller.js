@@ -41,7 +41,7 @@ export function methods(dbInyected) {
             const data = await db.query(TABLE, FIELD, identity);
 
             if (!data) {
-                throw new Error('User not found');
+                return { status: 404, message: 'Usuario o contraseña incorrecta' };
             }
 
             const PasswordMatch = await bcrypt.compare(password, data.PASS_AUTH);
@@ -51,7 +51,6 @@ export function methods(dbInyected) {
                 // const token = authIndex.assignToken({ ...data });
                 const token = await createAccessToken(data)
                 const userProfile = await db.userProfile(data.USER_AUTH)
-                console.log('userProfile: ', userProfile);
                 const user = data.USER_AUTH;
                 const infoTk = {
                     info: {
@@ -61,15 +60,15 @@ export function methods(dbInyected) {
                 }
                 const resultSavedToken = await db.insertData(TABLE2, infoTk);
                 if (resultSavedToken) {
-                    return { token, userProfile };
+                    return { status: 200, token, userProfile };
                 } else {
-                    throw new Error('Something was wrong...');
+                    return { status: 500, message: "success = false" }
                 }
             } else {
-                throw new Error('Something was wrong TRY');
+                return { status: 401, message: "Invalid credentials" }
             }
         } catch (error) {
-            throw error;
+            return { status: 500, message: "Internal Server Error" };
         }
     }
 
@@ -100,7 +99,7 @@ export function methods(dbInyected) {
             //     return db.updateDataNew(TABLE, FIELD, authData);
             // } else { throw new Error('Action denied'); }
             return db.updateDataNew(TABLE, FIELD, authData);
-            
+
         } else {
             if (method === 'PATCH') { return db.updateDataNew(TABLE, FIELD2, authData); }
             else {
@@ -129,7 +128,7 @@ export function methods(dbInyected) {
                     // Traer informacion de la tabla persona
                     // const infoPerson = await db.specificData('persona', 'id_persona', user.id);
                     const infoPerson = await db.userProfile(user.USER_AUTH);
-                    console.log('infoPerson (controller): ',infoPerson)
+                    console.log('infoPerson (controller): ', infoPerson)
                     // const information = {
                     //     id: infoPerson.ID_PERSONA,
                     //     identity: infoPerson.IDENTIFICACION,
