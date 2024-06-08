@@ -33,6 +33,7 @@ app.use(cors({
 // app.get('/', (req, res,) => {
 //   res.send('Welcome to my server in railway :D')
 // })
+
 app.use('/api/person', person);
 app.use('/api/users', users);
 app.use('/api/auth', auth);

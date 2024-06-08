@@ -5,6 +5,9 @@ export default {
     app: {
         port: process.env.PORT || 3000,
     },
+    frontend: {
+        url: process.env.FRONTEND_URL,
+    },
     jwt: {
         security: process.env.JET_SECRET || "secretPassword"
     },

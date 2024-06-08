@@ -42,9 +42,9 @@ export const createOrder = async (req, res) => {
   console.log(response.data);
   return res.json(response.data);
 }
-0
+
 export const captureOrder = async (req, res) => {
-  const {token} = req.query
+  const { token } = req.query
   const response = await axios.post(`${config.payment.paypalApi}/v2/checkout/orders/${token}/capture`, {}, {
     auth: {
       username: config.payment.paypalApiClient,
@@ -57,4 +57,4 @@ export const captureOrder = async (req, res) => {
   return res.send("payed");
 }
 
-export const cancelPayment = (req, res) => res.send('Cancel Payment');
+export const cancelPayment = (req, res) => res.redirect(config.frontend.url);
