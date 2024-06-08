@@ -54,7 +54,7 @@ export const captureOrder = async (req, res) => {
 
   console.log(response.data)
 
-  return res.send("payed");
+  return response;
 }
 
 export const cancelPayment = (req, res) => res.redirect(config.frontend.url);
