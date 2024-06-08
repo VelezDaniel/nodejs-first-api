@@ -5,7 +5,7 @@ import { cancelPayment, captureOrder, createOrder } from "./controller.js";
 const router = Router();
 
 
-router.get('/create-order', createOrder);
+router.post('/create-order', createOrder);
 
 router.get('/capture-order', captureOrder);
 
