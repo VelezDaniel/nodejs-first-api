@@ -54,7 +54,8 @@ export const captureOrder = async (req, res) => {
 
   console.log(response.data)
 
-  return response;
+  // return response;
+  res.redirect(`${config.frontend.url}/payed`);
 }
 
-export const cancelPayment = (req, res) => res.redirect(config.frontend.url);
+export const cancelPayment = (req, res) => res.redirect(`${config.frontend.url}/payment-canceled`);
