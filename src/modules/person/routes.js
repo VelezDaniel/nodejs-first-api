@@ -25,19 +25,17 @@ async function specificData(req, res, next) {
     }
 };
 
-// ! sin uso
 const addData = async (req, res, next) => {
     let message;
     try {
         const items = await ctrl.addData(req.body);
-
         if (req.body.id == 0) {
-            // const token = await authIndex.createAccessToken({id: WAIT})
-            // res.cookie("token", token);
+            
             message = 'Data saved succesfully';
         } else {
             message = 'Data updated succesfully';
         }
+        console.log("items in addData Back",items)
         succes(req, res, message, 201);
     } catch (err) {
         next(err);
@@ -71,7 +69,7 @@ async function registerClient(req, res) {
         // }
         if (items === false) {
             // res.status(409).json(["El usuario ya existe"]);
-            error(req, res, ["El usuario ya existe"], 409);
+            succes(req, res, ["El usuario ya existe"], 409);
         } else {
             succes(req, res, items, 201);
         }
@@ -85,7 +83,8 @@ router.get('/', allData);
 router.get('/:id', specificData);
 router.patch('/', addData);
 router.post('/', validateSchema(registerSchema), registerClient);
-router.post('/complete', registerClient)
+router.post('/complete', registerClient);
+router.post('/newperson', addData);
 router.delete('/:id', deleteData);
 router.delete('/', deleteDataBody);
 

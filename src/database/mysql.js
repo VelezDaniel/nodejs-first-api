@@ -5,7 +5,7 @@ const dbConfig = {
     host: config.mysql.host,
     user: config.mysql.user,
     password: config.mysql.password,
-    database: config.mysql.database
+    database: config.mysql.database,
 }
 
 let pool;
@@ -388,6 +388,13 @@ const registerClient = async (table, field, data) => {
         let existingUser;
         let existingAuth;
         let isUser = false;
+
+        // if(data.id && data.id === 0){
+        //     const isRegistered =  await getPersonData(table, 'IDENTIFICACION', data.identity);
+        //     console.log("isregistered: ", isRegistered);
+
+        // }
+
         const existingPerson = await getPersonData(table, 'IDENTIFICACION', data);
         console.log('ExistingPerson: ', existingPerson);
         if (existingPerson.length > 0) {
@@ -401,8 +408,21 @@ const registerClient = async (table, field, data) => {
         let idInserted;
         let returnResult;
 
-        //  ! REVISAR
-        if (existingAuth && existingAuth[0].PASS_AUTH !== '') {
+        if ((existingPerson && existingPerson.length > 0) && data.accionRequestForm === "prevPayForm") {
+            // Si solo el json con los datos enviados contiene un campo llamado "accionRequestForm" el condicional ejecutará unicamente esta acción
+            const updateOnlyPerson = await updateDataNew(table, 'IDENTIFICACION', {
+                id: existingPerson[0].IDENTIFICACION,
+                info: {
+                    NOMBRE: data.name,
+                    APELLIDO: data.lastName,
+                    DIRECCION: data.address,
+                    CELULAR: data.phone,
+                    NACIMIENTO: data.birth,
+                }
+            })
+            return updateOnlyPerson;
+
+        } else if (existingAuth && existingAuth[0].PASS_AUTH !== '') {
             return false;
         } else {
             if (existingPerson.length > 0 && existingUser.length < 1) {
@@ -428,8 +448,9 @@ const registerClient = async (table, field, data) => {
                 idInserted = result.insertId;
                 preReturnResult = await specificData(table, field, idInserted);
                 returnResult = {
-                    id: preReturnResult[0].IDENTIFICACION,
-                    name: preReturnResult[0].NOMBRE
+                    idClient: preReturnResult[0].ID_PERSONA,
+                    identity: preReturnResult[0].IDENTIFICACION,
+                    name: preReturnResult[0].NOMBRE,
                 }
             }
             console.log(result);
