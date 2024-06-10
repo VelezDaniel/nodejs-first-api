@@ -107,6 +107,7 @@ const allUsers = async () => {
             email: userFound.CORREO,
             state: userFound.ESTADO_USUARIO,
             birth: userFound.BIRTH,
+            area: userFound.AREA_ENTREGA,
             idUserRole: userFound.FK_ID_ROL,
             role: userFound.NOMBRE_ROL,
             dateRole: userFound.FECHA_ROL
@@ -244,6 +245,7 @@ const userProfile = async (ident) => {
             state: userFound.ESTADO_USUARIO,
             birth: userFound.NACIMIENTO,
             idRole: userFound.FK_ID_ROL,
+            area: userFound.AREA_ENTREGA,
             role: userFound.NOMBRE_ROL,
             dateRole: userFound.FECHA_HORA_REGISTRO_ROL
         }
@@ -281,6 +283,7 @@ const updateInsertPersonData = async (table, field, data, existingPerson, isUser
             celular: data.phone,
             direccion: data.address,
             correo: data.email,
+            area_entrega: data.area,
         }
     }
     const returnResult = await updateDataNew(table, field, infoData);
@@ -338,8 +341,9 @@ const insertPersonData = async (table, data) => {
             apellido: data.lastName,
             celular: data.phone,
             direccion: data.address || 'N/A',
-            CORREO: data.email,
-            NACIMIENTO: data.birth
+            correo: data.email,
+            nacimiento: data.birth,
+            area_entrega: data.area,
         }
     }
     // Insertar en tabla persona
@@ -418,11 +422,12 @@ const registerClient = async (table, field, data) => {
                     DIRECCION: data.address,
                     CELULAR: data.phone,
                     NACIMIENTO: data.birth,
+                    AREA_ENTREGA: data.area
                 }
             })
             return updateOnlyPerson;
 
-        } else if (existingAuth && existingAuth[0].PASS_AUTH !== '') {
+        } else if (existingAuth && existingAuth.length > 0 && existingAuth[0].PASS_AUTH !== '') {
             return false;
         } else {
             if (existingPerson.length > 0 && existingUser.length < 1) {
@@ -430,6 +435,7 @@ const registerClient = async (table, field, data) => {
                 result = await updateInsertPersonData(table, field, data, existingPerson, isUser);
                 idInserted = result.insertId;
                 preReturnResult = await specificData(table, field, idInserted)
+                console.log("preReturnResult ", preReturnResult)
                 returnResult = {
                     id: preReturnResult[0].IDENTIFICACION,
                     name: preReturnResult[0].NOMBRE
@@ -451,6 +457,7 @@ const registerClient = async (table, field, data) => {
                     idClient: preReturnResult[0].ID_PERSONA,
                     identity: preReturnResult[0].IDENTIFICACION,
                     name: preReturnResult[0].NOMBRE,
+                    area: preReturnResult[0].AREA_ENTREGA,
                 }
             }
             console.log(result);
@@ -462,6 +469,50 @@ const registerClient = async (table, field, data) => {
     } catch (error) {
         console.log(error)
     }
+}
+
+// Funcion exclusiva para la generacion de pedidos
+const insertOrderProcess = async (finalOrder) => {
+    const finalOrderComplete = {
+        info: {
+            SUBTOTAL_PEDIDO: 3,
+            FK_ID_PERSONA: 2,
+            FK_ID_ESTADO_PEDIDO: 2,
+            FK_ID_TIPO_ENTREGA: 1,
+            FK_ID_DOMICILIO: 1,
+            FK_ID_ESTADO_PAGO: 2,
+        }
+    }
+    const orderResult = await insertData("pedido", finalOrderComplete);
+    console.log("orderResult: ", orderResult);
+
+    if (orderResult) {
+        for (const element of cart) {
+            const orderDetail = {
+                info: {
+                    CANTIDAD_PRODUCTO: element.quantity,
+                    DESCRIPCION_DETALLE: element.orderBody.description,
+                    VALOR_TOTAL: element.price,
+                    CUBIERTOS: element.orderBody.cutlery === true ? 1 : 0,
+                    FK_ID_PRODUCTO: element.orderBody.productInfo.id,
+                    FK_ID_PEDIDO: element,
+                }
+            };
+
+            try {
+                const orderDetailResult = await insertData("detalle_pedido", orderDetail);
+                console.log("orderResult: ", orderDetailResult);
+
+                if (!orderDetailResult) {
+                    return new Error("insertion wasn't possible");
+                }
+            } catch (error) {
+                console.error("Error creating order: ", error);
+                return;
+            }
+        }
+    }
+
 }
 
 export const methods = {
@@ -478,5 +529,6 @@ export const methods = {
     deleteDataBody,
     query,
     userProfile,
-    registerClient
+    registerClient,
+    insertOrderProcess,
 }

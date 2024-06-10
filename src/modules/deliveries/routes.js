@@ -1,6 +1,9 @@
 import { Router } from "express";
 import { succes, error } from '../../network/response.js'
 import ctrl from './index.js';
+// checkAuth sirve para la validacion del token hecho con BEARER
+// import checkAuth from "../../auth/security.js";
+// import { utilities as authIndex } from "../../auth/index.js";
 
 const router = Router();
 
@@ -13,16 +16,15 @@ const allData = async (req, res, next) => {
     }
 };
 
-async function specificData(req, res) {
+async function specificData(req, res, next) {
     try {
-        if (!req.params.id) {
+        if(!req.params.id) {
             return error(req, res, 'Item not foun', 404);
         }
         const items = await ctrl.specificData(req.params.id);
         succes(req, res, items, 200);
     } catch (err) {
-        console.log(err)
-        return error(req, res, err, 404);
+        next(err);
     }
 };
 
@@ -42,25 +44,9 @@ const addData = async (req, res, next) => {
     }
 };
 
-const addOrder = async (req, res, next) => {
-    let message = "true";
-    try {
-        const items = await ctrl.addOrder(req.body);
-
-        // if (req.body.id == 0) {
-        //     message = 'Data saved succesfully';
-        // } else {
-        //     message = 'Data updated succesfully';
-        // }
-        succes(req, res, [message, items], 201);
-    } catch (err) {
-        next(err);
-    }
-}
-
 async function deleteData(req, res,) {
     try {
-        if (!req.params.id) {
+        if(!req.params.id) {
             return error(req, res, 'Item not foun', 404);
         }
         const items = await ctrl.deleteData(req.params.id);
@@ -74,5 +60,6 @@ router.get('/', allData);
 router.get('/:id', specificData);
 router.post('/', addData);
 router.delete('/:id', deleteData);
+// router.delete('/', deleteDataBody);
 
 export default router;

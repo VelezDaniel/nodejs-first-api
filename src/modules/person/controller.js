@@ -24,7 +24,8 @@ export function methods(dbInyected) {
                 celular: body.phone,
                 direccion: body.address,
                 CORREO: body.email,
-                NACIMIENTO: body.birth
+                NACIMIENTO: body.birth,
+                area_entrega: body.area,
             }
         }
         return db.addData(TABLE, FIELD, data);
@@ -43,7 +44,8 @@ export function methods(dbInyected) {
                 address: object.DIRECCION,
                 phone: object.CELULAR,
                 email: object.CORREO,
-                birth: object.BIRTH
+                birth: object.BIRTH,
+                area: object.AREA_ENTREGA,
             } 
         } else {
             return new Error('Usuario no encontrado')

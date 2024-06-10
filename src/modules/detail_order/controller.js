@@ -23,7 +23,7 @@ export function methods(dbInyected) {
                 }));
                 return ordersDetails;
             } else {
-                throw new Error('No se obtuvieron datos de la tabla seleccionada');
+                return { message: 'No se obtuvieron datos del pedido seleccionada' }
             }
         } catch (error) {
             console.log('error in details orders BK: ', error)
@@ -35,11 +35,16 @@ export function methods(dbInyected) {
             id: body.id,
             info: {
                 CANTIDAD_PRODUCTO: body.quantity,
-                DESCRIPCION_DETALLE: body.stateFlavor,
+                DESCRIPCION_DETALLE: body.description,
+                VALOR_TOTAL: body.totalValueProduct,
+                CUBIERTOS: body.cutlery,
+                FK_ID_PRODUCTO: body.idProduct,
             }
         }
         return db.addData(TABLE, FIELD, data);
     }
+
+    const addOrder = (body) => { return db.insertOrderProcess(body) }
 
     const specificData = (id) => {
         return db.specificData(TABLE, FIELD, id);
@@ -53,6 +58,7 @@ export function methods(dbInyected) {
         allData,
         specificData,
         addData,
-        deleteData
+        deleteData,
+        addOrder,
     }
 }
