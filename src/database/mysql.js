@@ -477,125 +477,150 @@ const registerClient = async (table, field, data) => {
     }
 }
 
+const queryOrder = async (table, order) => {
+    return new Promise((resolve, reject) => {
+        pool.query(`INSERT INTO ${table} (ID_PEDIDO, SUBTOTAL_PEDIDO, FK_ID_PERSONA, FK_ID_ESTADO_PEDIDO, FK_ID_TIPO_ENTREGA, FK_ID_DOMICILIO, FK_ID_ESTADO_PAGO) VALUES (NULL, ?, ?, ?, ?, ?, ?)`, [order.info.SUBTOTAL_PEDIDO, order.info.FK_ID_PERSONA, order.info.FK_ID_ESTADO_PEDIDO, order.info.FK_ID_TIPO_ENTREGA, order.info.FK_ID_DOMICILIO, order.info.FK_ID_ESTADO_PAGO], (error, result) => {
+            return error ? reject(error) : resolve(result);
+        });
+    });
+}
+
 // Funcion exclusiva para la generacion de pedidos
 const insertOrderProcess = async (finalOrder) => {
 
     let finalOrderComplete;
     let idOrder;
     // let aditionId;
+    let resultOrderInsertion;
 
-    if ((finalOrder && finalOrder.fromLocal === true) || (finalOrder && finalOrder.client && finalOrder.client?.area == null) ) {
+    console.log("Final order: ", finalOrder);
+
+    if ((finalOrder && finalOrder.fromLocal === true) || (finalOrder && finalOrder.client && finalOrder.client?.area == null)) {
         finalOrderComplete = {
             info: {
                 SUBTOTAL_PEDIDO: finalOrder.totalPriceOrder,
-                FK_ID_PERSONA: finalOrder.client.id,
+                FK_ID_PERSONA: parseInt(finalOrder.client.id),
                 FK_ID_ESTADO_PEDIDO: 1,
                 FK_ID_TIPO_ENTREGA: 2,
+                FK_ID_DOMICILIO: null,
                 FK_ID_ESTADO_PAGO: 2,
             }
         }
-        console.log("finalOrderComplete: ", finalOrderComplete)
+        console.log("finalOrderComplete condition 1: ", finalOrderComplete)
 
-    } else if(finalOrder && finalOrder.client && finalOrder.client.area !== null) {
+    } else if (finalOrder && finalOrder.client && finalOrder.client.area !== null) {
         const resultDelivery = specificData("DOMICILIO", "ID_DOMICILIO", finalOrder.client.area);
         const sumPrice = resultDelivery[0].deliveryPrice + finalOrder.totalPriceOrder;
 
         finalOrderComplete = {
             info: {
                 SUBTOTAL_PEDIDO: sumPrice,
-                FK_ID_PERSONA: finalOrder.client.id,
+                FK_ID_PERSONA: parseInt(finalOrder.client.id),
                 FK_ID_ESTADO_PEDIDO: 1,
                 FK_ID_TIPO_ENTREGA: 1,
                 FK_ID_DOMICILIO: finalOrder.client.area || null,
                 FK_ID_ESTADO_PAGO: 2,
             }
         }
-        console.log("finalOrderComplete: ", finalOrderComplete)
+        console.log("finalOrderComplete condition 2: ", finalOrderComplete)
     } else {
         console.log("Client information is missing or invalid");
+        return;
     }
 
-    const resultOrderInsertion = await insertData("pedido", finalOrderComplete);
+    console.log("finalOrderComplete before insertion: ", finalOrderComplete)
+
+    if (finalOrderComplete) {
+        resultOrderInsertion = await insertData("pedido", finalOrderComplete);
+        console.log("resulOrderinsertion: ", resultOrderInsertion);
+        // if(resultOrderInsertion){
+        //     return resultOrderInsertion;
+        // } else {
+        //     return false;
+        // }
+    } else {
+        console.log("final order is undefined or it doesn't exist");
+        return;
+    }
+
+    // * HASTA ESTE PUNTO FUNCIONA ^
 
     if (resultOrderInsertion && resultOrderInsertion.insertId) {
         idOrder = resultOrderInsertion.insertId;
 
         console.log("resultOrderInsertion: ", resultOrderInsertion);
+        console.log(finalOrder);
 
         // 2 - agregar cada item del carrito
-        for (const element of cart) {
-            const orderDetail = {
-                info: {
-                    CANTIDAD_PRODUCTO: element.quantity,
-                    DESCRIPCION_DETALLE: element.orderBody.description,
-                    VALOR_TOTAL: element.price,
-                    CUBIERTOS: element.orderBody.cutlery === true ? 1 : 0,
-                    FK_ID_PRODUCTO: element.orderBody.productInfo.id,
-                    FK_ID_PEDIDO: idOrder,
+        if (finalOrder.cart && Array.isArray(finalOrder.cart)) {
+            const processCartElement = async (element) => {
+                console.log("Processing cart element: ", element);
+
+                const orderDetail = {
+                    info: {
+                        CANTIDAD_PRODUCTO: element.quantity,
+                        DESCRIPCION_DETALLE: element.orderBody.description,
+                        VALOR_TOTAL: element.price,
+                        CUBIERTOS: element.orderBody.cutlery === true ? 1 : 0,
+                        FK_ID_PRODUCTO: element.orderBody.productInfo.id,
+                        FK_ID_PEDIDO: idOrder,
+                    }
+                };
+
+                try {
+                    const orderDetailResult = await insertData("detalle_pedido", orderDetail.info);
+                    console.log("orderResult: ", orderDetailResult);
+
+                    if (!orderDetailResult) {
+                        throw new Error("Failed to insert order detail");
+                    }
+
+                    if (element.orderBody.aditions && element.orderBody.aditions.length > 0) {
+                        const combineAditions = element.orderBody.aditions.map(adition => ({
+                            id: adition.id,
+                            quantity: element.orderBody.aditionQuantity[adition.id] || 0,
+                        }));
+
+                        await Promise.all(combineAditions.map(async (adition) => {
+                            const aditionInfo = {
+                                CANTIDAD_ADICION: adition.quantity,
+                                FK_ID_ADICION: adition.id,
+                                FK_ID_DETALLE_PEDIDO: idOrder,
+                            };
+                            const insertAditionsDetail = await insertData("adicion_detalle_pedido", aditionInfo);
+                            console.log("insertAditionsDetail: ", insertAditionsDetail);
+                        }));
+                    }
+
+                    if (element.orderBody.flavors && element.orderBody.flavors.length > 0) {
+                        await Promise.all(element.orderBody.flavors.map(async (flavor) => {
+                            const flavorInfo = {
+                                FK_ID_SABOR: flavor.id,
+                                FK_ID_DETALLE_PEDIDO: idOrder,
+                            };
+                            const insertFlavorDetail = await insertData("sabor_detalle_pedido", flavorInfo);
+                            console.log("insertFlavorDetail: ", insertFlavorDetail);
+                        }));
+                    }
+                } catch (error) {
+                    console.error("Error creating order: ", error);
+                    throw error;
                 }
             };
 
-            try {
-                const orderDetailResult = await insertData("detalle_pedido", orderDetail);
-                console.log("orderResult: ", orderDetailResult);
-
-                // ! Si no existe se retorna false
-                if (!orderDetailResult) {
-                    return false;
-                }
-
-                // ? Insertar detalle de adiciones si aplica
-                if (element.orderBody.aditions && element.orderBody.aditions.length > 0) {
-
-                    const combineAditions = element.orderBody.aditions.map(adition => {
-                        return {
-                            id: adition.id,
-                            quantity: element.orderBody.aditionQuantity[adition.id] || 0,
-                        }
-                    })
-
-                    for (const adition of combineAditions) {
-
-                        const aditionInfo = {
-
-                            CANTIDAD_ADICION: adition.quantity,
-                            FK_ID_ADICION: adition.id,
-                            FK_ID_DETALLE_PEDIDO: idOrder,
-                        }
-
-                        const insertAditionsDetail = await insertData("adicion_detalle_pedido", aditionInfo)
-                        console.log("insertAditionsDetail: ", insertAditionsDetail)
-                    }
-                }
-
-                // ? Insertar detalle de sabores de helado si aplica
-                if (element.orderBody.flavors && element.orderBody.flavors.length > 0) {
-                    for (const flavor of element.orderBody.flavors) {
-                        const flavorInfo = {
-                            FK_ID_SABOR: flavor.id,
-                            FK_ID_DETALLE_PEDIDO: idOrder,
-                        }
-
-                        const insertFlavorDetail = await insertData("sabor_detalle_pedido", flavorInfo);
-                        console.log("insertFlavorDetail: ", insertFlavorDetail);
-                    }
-                }
-            } catch (error) {
-                console.error("Error creating order: ", error);
-                return error("Error creating order: ", error);
-            }
+            await Promise.all(finalOrder.cart.map(processCartElement));
+        } else {
+            console.log("Cart is not defined or not an array");
+            return;
         }
-
     }
-
     // const orderResult = await insertData("pedido", finalOrderComplete);
     // console.log("orderResult: ", orderResult);
 
-    if (orderResult) {
-        // Se utiliza For of porque este permite el uso de async await, el forEach no
+    // if (orderResult) {
+    //     // Se utiliza For of porque este permite el uso de async await, el forEach no
 
-    }
-
+    // }
 }
 
 export const methods = {
