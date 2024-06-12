@@ -568,7 +568,7 @@ const insertOrderProcess = async (finalOrder) => {
                 };
 
                 try {
-                    const orderDetailResult = await insertData("detalle_pedido", orderDetail.info);
+                    const orderDetailResult = await insertData("detalle_pedido", orderDetail);
                     console.log("orderResult: ", orderDetailResult);
 
                     if (!orderDetailResult) {
@@ -583,9 +583,11 @@ const insertOrderProcess = async (finalOrder) => {
 
                         await Promise.all(combineAditions.map(async (adition) => {
                             const aditionInfo = {
-                                CANTIDAD_ADICION: adition.quantity,
-                                FK_ID_ADICION: adition.id,
-                                FK_ID_DETALLE_PEDIDO: idOrder,
+                                info: {
+                                    CANTIDAD_ADICION: adition.quantity,
+                                    FK_ID_ADICION: adition.id,
+                                    FK_ID_DETALLE_PEDIDO: orderDetailResult.insertId,
+                                }
                             };
                             const insertAditionsDetail = await insertData("adicion_detalle_pedido", aditionInfo);
                             console.log("insertAditionsDetail: ", insertAditionsDetail);
@@ -595,8 +597,10 @@ const insertOrderProcess = async (finalOrder) => {
                     if (element.orderBody.flavors && element.orderBody.flavors.length > 0) {
                         await Promise.all(element.orderBody.flavors.map(async (flavor) => {
                             const flavorInfo = {
-                                FK_ID_SABOR: flavor.id,
-                                FK_ID_DETALLE_PEDIDO: idOrder,
+                                info: {
+                                    FK_ID_SABOR: flavor.id,
+                                    FK_ID_DETALLE_PEDIDO: orderDetailResult.insertId,
+                                }
                             };
                             const insertFlavorDetail = await insertData("sabor_detalle_pedido", flavorInfo);
                             console.log("insertFlavorDetail: ", insertFlavorDetail);
