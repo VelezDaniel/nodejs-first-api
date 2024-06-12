@@ -63,7 +63,7 @@ const allProducts = async (table) => {
         });
     });
 
-    console.log('products from backend: ', result);
+    // console.log('products from backend: ', result);
     if (result.length > 0) {
         const products = result.map(productFound => ({
             id: productFound.ID_PRODUCTO,
@@ -445,9 +445,13 @@ const registerClient = async (table, field, data) => {
                 result = await updateInsertPersonData(table, field, data, existingPerson, isUser);
                 idInserted = result.insertId;
                 preReturnResult = await specificData(table, field, idInserted);
+                console.log("preReturnResult missing only pass: ", preReturnResult)
                 returnResult = {
                     id: existingPerson[0].IDENTIFICACION,
                     name: existingPerson[0].NOMBRE,
+                    lastName: existingPerson[0].APELLIDO,
+                    address: existingPerson[0].DIRECCION,
+                    area: existingPerson[0].AREA_ENTREGA,
                 }
             } else {
                 result = await insertPersonData(table, data);
@@ -457,7 +461,9 @@ const registerClient = async (table, field, data) => {
                     idClient: preReturnResult[0].ID_PERSONA,
                     identity: preReturnResult[0].IDENTIFICACION,
                     name: preReturnResult[0].NOMBRE,
-                    area: preReturnResult[0].AREA_ENTREGA,
+                    lastName: preReturnResult[0].APELLIDO,
+                    // address: preReturnResult[0].DIRECCION,
+                    // area: preReturnResult[0].AREA_ENTREGA,
                 }
             }
             console.log(result);
@@ -473,20 +479,50 @@ const registerClient = async (table, field, data) => {
 
 // Funcion exclusiva para la generacion de pedidos
 const insertOrderProcess = async (finalOrder) => {
-    const finalOrderComplete = {
-        info: {
-            SUBTOTAL_PEDIDO: 3,
-            FK_ID_PERSONA: 2,
-            FK_ID_ESTADO_PEDIDO: 2,
-            FK_ID_TIPO_ENTREGA: 1,
-            FK_ID_DOMICILIO: 1,
-            FK_ID_ESTADO_PAGO: 2,
-        }
-    }
-    const orderResult = await insertData("pedido", finalOrderComplete);
-    console.log("orderResult: ", orderResult);
 
-    if (orderResult) {
+    let finalOrderComplete;
+    let idOrder;
+    // let aditionId;
+
+    if ((finalOrder && finalOrder.fromLocal === true) || (finalOrder && finalOrder.client && finalOrder.client?.area == null) ) {
+        finalOrderComplete = {
+            info: {
+                SUBTOTAL_PEDIDO: finalOrder.totalPriceOrder,
+                FK_ID_PERSONA: finalOrder.client.id,
+                FK_ID_ESTADO_PEDIDO: 1,
+                FK_ID_TIPO_ENTREGA: 2,
+                FK_ID_ESTADO_PAGO: 2,
+            }
+        }
+        console.log("finalOrderComplete: ", finalOrderComplete)
+
+    } else if(finalOrder && finalOrder.client && finalOrder.client.area !== null) {
+        const resultDelivery = specificData("DOMICILIO", "ID_DOMICILIO", finalOrder.client.area);
+        const sumPrice = resultDelivery[0].deliveryPrice + finalOrder.totalPriceOrder;
+
+        finalOrderComplete = {
+            info: {
+                SUBTOTAL_PEDIDO: sumPrice,
+                FK_ID_PERSONA: finalOrder.client.id,
+                FK_ID_ESTADO_PEDIDO: 1,
+                FK_ID_TIPO_ENTREGA: 1,
+                FK_ID_DOMICILIO: finalOrder.client.area || null,
+                FK_ID_ESTADO_PAGO: 2,
+            }
+        }
+        console.log("finalOrderComplete: ", finalOrderComplete)
+    } else {
+        console.log("Client information is missing or invalid");
+    }
+
+    const resultOrderInsertion = await insertData("pedido", finalOrderComplete);
+
+    if (resultOrderInsertion && resultOrderInsertion.insertId) {
+        idOrder = resultOrderInsertion.insertId;
+
+        console.log("resultOrderInsertion: ", resultOrderInsertion);
+
+        // 2 - agregar cada item del carrito
         for (const element of cart) {
             const orderDetail = {
                 info: {
@@ -495,7 +531,7 @@ const insertOrderProcess = async (finalOrder) => {
                     VALOR_TOTAL: element.price,
                     CUBIERTOS: element.orderBody.cutlery === true ? 1 : 0,
                     FK_ID_PRODUCTO: element.orderBody.productInfo.id,
-                    FK_ID_PEDIDO: element,
+                    FK_ID_PEDIDO: idOrder,
                 }
             };
 
@@ -503,14 +539,61 @@ const insertOrderProcess = async (finalOrder) => {
                 const orderDetailResult = await insertData("detalle_pedido", orderDetail);
                 console.log("orderResult: ", orderDetailResult);
 
+                // ! Si no existe se retorna false
                 if (!orderDetailResult) {
-                    return new Error("insertion wasn't possible");
+                    return false;
+                }
+
+                // ? Insertar detalle de adiciones si aplica
+                if (element.orderBody.aditions && element.orderBody.aditions.length > 0) {
+
+                    const combineAditions = element.orderBody.aditions.map(adition => {
+                        return {
+                            id: adition.id,
+                            quantity: element.orderBody.aditionQuantity[adition.id] || 0,
+                        }
+                    })
+
+                    for (const adition of combineAditions) {
+
+                        const aditionInfo = {
+
+                            CANTIDAD_ADICION: adition.quantity,
+                            FK_ID_ADICION: adition.id,
+                            FK_ID_DETALLE_PEDIDO: idOrder,
+                        }
+
+                        const insertAditionsDetail = await insertData("adicion_detalle_pedido", aditionInfo)
+                        console.log("insertAditionsDetail: ", insertAditionsDetail)
+                    }
+                }
+
+                // ? Insertar detalle de sabores de helado si aplica
+                if (element.orderBody.flavors && element.orderBody.flavors.length > 0) {
+                    for (const flavor of element.orderBody.flavors) {
+                        const flavorInfo = {
+                            FK_ID_SABOR: flavor.id,
+                            FK_ID_DETALLE_PEDIDO: idOrder,
+                        }
+
+                        const insertFlavorDetail = await insertData("sabor_detalle_pedido", flavorInfo);
+                        console.log("insertFlavorDetail: ", insertFlavorDetail);
+                    }
                 }
             } catch (error) {
                 console.error("Error creating order: ", error);
-                return;
+                return error("Error creating order: ", error);
             }
         }
+
+    }
+
+    // const orderResult = await insertData("pedido", finalOrderComplete);
+    // console.log("orderResult: ", orderResult);
+
+    if (orderResult) {
+        // Se utiliza For of porque este permite el uso de async await, el forEach no
+
     }
 
 }

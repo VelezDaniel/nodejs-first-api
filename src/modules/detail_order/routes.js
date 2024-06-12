@@ -73,6 +73,7 @@ async function deleteData(req, res,) {
 router.get('/', allData);
 router.get('/:id', specificData);
 router.post('/', addData);
+router.post('/new-order', addOrder)
 router.delete('/:id', deleteData);
 
 export default router;

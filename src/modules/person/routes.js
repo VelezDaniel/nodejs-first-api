@@ -30,12 +30,12 @@ const addData = async (req, res, next) => {
     try {
         const items = await ctrl.addData(req.body);
         if (req.body.id == 0) {
-            
+
             message = 'Data saved succesfully';
         } else {
             message = 'Data updated succesfully';
         }
-        console.log("items in addData Back",items)
+        console.log("items in addData Back", items)
         succes(req, res, message, 201);
     } catch (err) {
         next(err);
@@ -51,19 +51,19 @@ async function deleteData(req, res) {
     }
 };
 
-async function deleteDataBody(req, res, next) {
-    try {
-        const items = await ctrl.deleteDataBody(req.body);
-        succes(req, res, 'Information deleted succesfully', 200);
-    } catch (err) {
-        next(err);
-    }
-};
+// async function deleteDataBody(req, res, next) {
+//     try {
+//         const items = await ctrl.deleteDataBody(req.body);
+//         succes(req, res, 'Information deleted succesfully', 200);
+//     } catch (err) {
+//         next(err);
+//     }
+// };
 
 async function registerClient(req, res) {
     try {
         const items = await ctrl.registerClient(req.body);
-        console.log('items: ',items);
+        console.log('items: ', items);
         // const resultItems = {
         //     user: items.body,
         // }
@@ -86,7 +86,6 @@ router.post('/', validateSchema(registerSchema), registerClient);
 router.post('/complete', registerClient);
 router.post('/newperson', addData);
 router.delete('/:id', deleteData);
-router.delete('/', deleteDataBody);
+// router.delete('/', deleteDataBody);
 
 export default router;
-
