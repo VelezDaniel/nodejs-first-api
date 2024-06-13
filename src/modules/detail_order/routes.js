@@ -13,6 +13,21 @@ const allData = async (req, res, next) => {
     }
 };
 
+const getOrders = async (req, res) => {
+    try {
+        const items = await ctrl.getOrders();
+
+        console.log("ITEMS IN ROUTER: ", items);
+        if (items) {
+            succes(req, res, items, 200);
+        } else {
+            error(req, res, "Error in router: ", 404);
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 async function specificData(req, res) {
     try {
         if (!req.params.id) {
@@ -70,7 +85,7 @@ async function deleteData(req, res,) {
     }
 };
 
-router.get('/', allData);
+router.get('/', getOrders);
 router.get('/:id', specificData);
 router.post('/', addData);
 router.post('/new-order', addOrder)
