@@ -509,7 +509,7 @@ const insertOrderProcess = async (finalOrder) => {
         console.log("finalOrderComplete condition 1: ", finalOrderComplete)
 
     } else if ((finalOrder && finalOrder.client) && (finalOrder.client.area !== null)) {
-        const resultDelivery = specificData("DOMICILIO", "ID_DOMICILIO", finalOrder.client.area);
+        const resultDelivery = await specificData("DOMICILIO", "ID_DOMICILIO", finalOrder.client.area);
         console.log(" ************** RESULT DELIVERY *******************",resultDelivery)
         const sumPrice = resultDelivery[0].COSTO_DOMICILIO + finalOrder.totalPriceOrder;
 
