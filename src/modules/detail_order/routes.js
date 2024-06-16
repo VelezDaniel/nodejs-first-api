@@ -60,6 +60,7 @@ const addData = async (req, res, next) => {
 const addOrder = async (req, res, next) => {
     let message = "true";
     try {
+        console.log("req.body: ",req.body)
         const items = await ctrl.addOrder(req.body);
 
         // if (req.body.id == 0) {

@@ -425,6 +425,7 @@ const registerClient = async (table, field, data) => {
                     AREA_ENTREGA: data.area
                 }
             })
+            console.log("updateOnlyPerson ", updateOnlyPerson);
             return updateOnlyPerson;
 
         } else if (existingAuth && existingAuth.length > 0 && existingAuth[0].PASS_AUTH !== '') {
@@ -493,7 +494,7 @@ const insertOrderProcess = async (finalOrder) => {
     // let aditionId;
     let resultOrderInsertion;
 
-    console.log("Final order: ", finalOrder);
+    console.log("Final order: In mysql", finalOrder);
 
     if ((finalOrder && finalOrder.fromLocal === true) || (finalOrder && finalOrder.client && finalOrder.client?.area == null)) {
         finalOrderComplete = {
@@ -516,7 +517,7 @@ const insertOrderProcess = async (finalOrder) => {
         finalOrderComplete = {
             info: {
                 SUBTOTAL_PEDIDO: sumPrice,
-                FK_ID_PERSONA: parseInt(finalOrder.client.id),
+                FK_ID_PERSONA: parseInt(finalOrder.client.idClient || finalOrder.client.id || null),
                 FK_ID_ESTADO_PEDIDO: 1,
                 FK_ID_TIPO_ENTREGA: 1,
                 FK_ID_DOMICILIO: resultDelivery[0].ID_DOMICILIO || null,
