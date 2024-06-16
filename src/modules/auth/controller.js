@@ -65,7 +65,7 @@ export function methods(dbInyected) {
                     return { status: 500, message: "success = false" }
                 }
             } else {
-                return { status: 401, message: "Invalid credentials" }
+                return { status: 401, message: "Credenciales inválidas" }
             }
         } catch (error) {
             return { status: 500, message: "Internal Server Error" };

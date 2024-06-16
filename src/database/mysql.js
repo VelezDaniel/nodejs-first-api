@@ -478,20 +478,19 @@ const registerClient = async (table, field, data) => {
     }
 }
 
-const queryOrder = async (table, order) => {
-    return new Promise((resolve, reject) => {
-        pool.query(`INSERT INTO ${table} (ID_PEDIDO, SUBTOTAL_PEDIDO, FK_ID_PERSONA, FK_ID_ESTADO_PEDIDO, FK_ID_TIPO_ENTREGA, FK_ID_DOMICILIO, FK_ID_ESTADO_PAGO) VALUES (NULL, ?, ?, ?, ?, ?, ?)`, [order.info.SUBTOTAL_PEDIDO, order.info.FK_ID_PERSONA, order.info.FK_ID_ESTADO_PEDIDO, order.info.FK_ID_TIPO_ENTREGA, order.info.FK_ID_DOMICILIO, order.info.FK_ID_ESTADO_PAGO], (error, result) => {
-            return error ? reject(error) : resolve(result);
-        });
-    });
-}
+// const queryOrder = async (table, order) => {
+//     return new Promise((resolve, reject) => {
+//         pool.query(`INSERT INTO ${table} (ID_PEDIDO, SUBTOTAL_PEDIDO, FK_ID_PERSONA, FK_ID_ESTADO_PEDIDO, FK_ID_TIPO_ENTREGA, FK_ID_DOMICILIO, FK_ID_ESTADO_PAGO) VALUES (NULL, ?, ?, ?, ?, ?, ?)`, [order.info.SUBTOTAL_PEDIDO, order.info.FK_ID_PERSONA, order.info.FK_ID_ESTADO_PEDIDO, order.info.FK_ID_TIPO_ENTREGA, order.info.FK_ID_DOMICILIO, order.info.FK_ID_ESTADO_PAGO], (error, result) => {
+//             return error ? reject(error) : resolve(result);
+//         });
+//     });
+// }
 
 // Funcion exclusiva para la generacion de pedidos
 const insertOrderProcess = async (finalOrder) => {
 
     let finalOrderComplete;
     let idOrder;
-    // let aditionId;
     let resultOrderInsertion;
 
     console.log("Final order: In mysql", finalOrder);
@@ -500,6 +499,7 @@ const insertOrderProcess = async (finalOrder) => {
         finalOrderComplete = {
             info: {
                 SUBTOTAL_PEDIDO: finalOrder.totalPriceOrder,
+                TERMINADO: null,
                 FK_ID_PERSONA: parseInt(finalOrder.client.id),
                 FK_ID_ESTADO_PEDIDO: 1,
                 FK_ID_TIPO_ENTREGA: 2,
@@ -517,6 +517,7 @@ const insertOrderProcess = async (finalOrder) => {
         finalOrderComplete = {
             info: {
                 SUBTOTAL_PEDIDO: sumPrice,
+                TERMINADO: null,
                 FK_ID_PERSONA: parseInt(finalOrder.client.idClient || finalOrder.client.id || null),
                 FK_ID_ESTADO_PEDIDO: 1,
                 FK_ID_TIPO_ENTREGA: 1,
@@ -535,17 +536,10 @@ const insertOrderProcess = async (finalOrder) => {
     if (finalOrderComplete) {
         resultOrderInsertion = await insertData("pedido", finalOrderComplete);
         console.log("resulOrderinsertion: ", resultOrderInsertion);
-        // if(resultOrderInsertion){
-        //     return resultOrderInsertion;
-        // } else {
-        //     return false;
-        // }
     } else {
         console.log("final order is undefined or it doesn't exist");
         return;
     }
-
-    // * HASTA ESTE PUNTO FUNCIONA ^
 
     if (resultOrderInsertion && resultOrderInsertion.insertId) {
         idOrder = resultOrderInsertion.insertId;
