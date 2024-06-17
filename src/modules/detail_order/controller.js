@@ -20,6 +20,7 @@ export function methods(dbInyected) {
                 const {
                     ID_PEDIDO,
                     SUBTOTAL_PEDIDO,
+                    TERMINADO,
                     FK_ID_PERSONA,
                     FK_ID_ESTADO_PEDIDO,
                     FK_ID_TIPO_ENTREGA,
@@ -46,6 +47,7 @@ export function methods(dbInyected) {
                     ordersMap.set(ID_PEDIDO, {
                         idOrder: ID_PEDIDO,
                         totalOrder: SUBTOTAL_PEDIDO,
+                        finished: TERMINADO,
                         client: {
                             idClient: ID_PERSONA,
                             identity: IDENTIFICACION,
@@ -121,25 +123,25 @@ export function methods(dbInyected) {
         }
     }
 
-    const allData = async () => {
-        try {
-            const results = await db.allData(TABLE);
-            if (Array.isArray(results)) {
-                const ordersDetails = results.map(result => ({
-                    id: result.ID_DETALLE_PEDIDO,
-                    quantity: result.CANTIDAD_PRODUCTO,
-                    description: result.DESCRIPCION_DETALLE,
-                    totalProduct: result.VALOR_TOTAL,
-                    idProduct: result.FK_ID_PRODUCTO,
-                }));
-                return ordersDetails;
-            } else {
-                return { message: 'No se obtuvieron datos del pedido seleccionada' }
-            }
-        } catch (error) {
-            console.log('error in details orders BK: ', error)
-        }
-    }
+    // const allData = async () => {
+    //     try {
+    //         const results = await db.allData(TABLE);
+    //         if (Array.isArray(results)) {
+    //             const ordersDetails = results.map(result => ({
+    //                 id: result.ID_DETALLE_PEDIDO,
+    //                 quantity: result.CANTIDAD_PRODUCTO,
+    //                 description: result.DESCRIPCION_DETALLE,
+    //                 totalProduct: result.VALOR_TOTAL,
+    //                 idProduct: result.FK_ID_PRODUCTO,
+    //             }));
+    //             return ordersDetails;
+    //         } else {
+    //             return { message: 'No se obtuvieron datos del pedido seleccionada' }
+    //         }
+    //     } catch (error) {
+    //         console.log('error in details orders BK: ', error)
+    //     }
+    // }
 
     const addData = (body) => {
         const data = {
@@ -153,6 +155,28 @@ export function methods(dbInyected) {
             }
         }
         return db.addData(TABLE, FIELD, data);
+    }
+
+    const updateOrder = (body) => {
+        let data = {
+            id: body.idOrder,
+            info: {}
+        };
+        switch (body.requiredAction) {
+            case "STATE":
+                data.info.FK_ID_ESTADO_PEDIDO = parseInt(body.row);
+                break;
+            case "PAYED":
+                data.info.FK_ID_ESTADO_PAGO = parseInt(body.row);
+                break;
+            case "FINISHED":
+                data.info.TERMINADO = parseInt(body.row);
+                break;
+            default:
+                return false;
+        }
+
+        return db.addData("PEDIDO", "ID_PEDIDO", data);
     }
 
     const addOrder = (body) => { return db.insertOrderProcess(body) }
@@ -171,5 +195,6 @@ export function methods(dbInyected) {
         addData,
         deleteData,
         addOrder,
+        updateOrder,
     }
 }

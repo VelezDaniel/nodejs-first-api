@@ -60,7 +60,7 @@ const addData = async (req, res, next) => {
 const addOrder = async (req, res, next) => {
     let message = "true";
     try {
-        console.log("req.body: ",req.body)
+        console.log("req.body: ", req.body)
         const items = await ctrl.addOrder(req.body);
 
         // if (req.body.id == 0) {
@@ -71,6 +71,22 @@ const addOrder = async (req, res, next) => {
         succes(req, res, [message, items], 201);
     } catch (err) {
         next(err);
+    }
+}
+
+const updateOrder = async (req, res, next) => {
+    try {
+        console.log("req.body: patch order ", req.body)
+        const result = await ctrl.updateOrder(req.body);
+        console.log("result of update Order: ", result);
+
+        if (result) {
+            succes(req, res, true, 201);
+        } else {
+            error(req, res, false, 404);
+        }
+    } catch (error) {
+        next(error);
     }
 }
 
@@ -89,7 +105,8 @@ async function deleteData(req, res,) {
 router.get('/', getOrders);
 router.get('/:id', specificData);
 router.post('/', addData);
-router.post('/new-order', addOrder)
+router.post('/new-order', addOrder);
+router.patch('/update-order', updateOrder);
 router.delete('/:id', deleteData);
 
 export default router;
