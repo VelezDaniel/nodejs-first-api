@@ -1,4 +1,3 @@
-// import { methods as db } from "../../database/mysql";
 const TABLE = 'PRODUCTO';
 const FIELD = 'ID_PRODUCTO';
 export function methods(dbInyected) {

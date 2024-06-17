@@ -12,36 +12,9 @@ let pool;
 
 const createPool = () => {
     pool = mysql.createPool(dbConfig);
-    console.log('DB pool connected');
 }
 
 createPool();
-// ! not working in production
-// let connection;
-
-// const connectionMysql = () => {
-//     connection = mysql.createConnection(dbConfig);
-//     connection.connect((err) => {
-//         if (err) {
-//             console.log('[dbConfig]', dbConfig);
-//             console.log('[DB Error]', err);
-//             // setTimeout(connectionMysql, 200);
-//         } else {
-//             console.log(' DB connected');
-//         }
-//     });
-
-// connection.on('error', err => {
-//     console.log('[DB error]', err);
-//     if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-//         connectionMysql();
-//     } else {
-//         throw err;
-//     }
-// });
-// }
-
-// connectionMysql();
 
 // Mostrar todos los datos de una tabla
 const allData = (table) => {
@@ -63,7 +36,6 @@ const allProducts = async (table) => {
         });
     });
 
-    // console.log('products from backend: ', result);
     if (result.length > 0) {
         const products = result.map(productFound => ({
             id: productFound.ID_PRODUCTO,
@@ -92,9 +64,6 @@ const allUsers = async () => {
             return error ? reject(error) : resolve(result);
         });
     });
-
-    console.log('result from allUsers: ')
-    console.log(result);
 
     if (result.length > 0) {
         const users = result.map(userFound => ({
@@ -156,7 +125,6 @@ const specificData = (table, field, id) => {
 }
 
 const updateDataNew = (table, field, data) => {
-    console.log("data mysql", data);
     return new Promise((resolve, reject) => {
         const keys = Object.keys(data.info);
         const setClause = keys.map(key => `${key} = IFNULL(?, ${key})`).join(', ');
@@ -255,7 +223,6 @@ const userProfile = async (ident) => {
     } else {
         return null;
     }
-    // return result.length > 0 ? result[0] : null;
 }
 
 // ? Metodos especificos para registrar un usuario
@@ -263,7 +230,6 @@ const userProfile = async (ident) => {
 const getPersonData = async (table, field, data) => {
     return new Promise((resolve, reject) => {
         pool.query(`SELECT * FROM ${table} WHERE ${field} = ?`, data.identity, (error, result) => {
-            console.log(result)
             return error ? reject(error) : resolve(result);
         });
     });
@@ -273,7 +239,6 @@ const getPersonData = async (table, field, data) => {
 const updateInsertPersonData = async (table, field, data, existingPerson, isUser) => {
     const information = existingPerson[0];
     let showInfo
-    console.log(information);
 
     const infoData = {
         id: information.ID_PERSONA,
@@ -290,16 +255,12 @@ const updateInsertPersonData = async (table, field, data, existingPerson, isUser
     const lastInsertId = returnResult.insertId;
     const resultRole = await insertData("REGISTRO_ROL", { id: 0, info: { FK_ID_ROL: 3 } });
     const lastInsertIdRole = resultRole.insertId;
-    console.log('RESULTS update, and role')
-    console.log(returnResult)
-    console.log(resultRole);
+
 
     const user = existingPerson[0];
     // let role = resultRole[2];
     const getIdRole = await specificData('REGISTRO_ROL', 'ID_REGISTRO_ROL', lastInsertIdRole);
     const role = getIdRole[0];
-    console.log(role);
-    console.log(getIdRole)
     const userData = {
         id: user.ID_PERSONA,
         info: {
@@ -328,7 +289,6 @@ const updateInsertPersonData = async (table, field, data, existingPerson, isUser
         addPassword = await updateDataNew("auth", "id_auth", authInfo);
     }
 
-    console.log('showInfo: ', showInfo);
     return returnResult;
 }
 
@@ -369,20 +329,6 @@ const insertPersonData = async (table, data) => {
 
     // Insercion en usuario
     const resultUser = await insertData("USUARIO", userData);
-    console.log(resultUser)
-
-    // if (isUser === true && data.password) {
-    //     pass = await bcrypt.hash(data.password.toString(), 5);
-
-    //     const authInfo = {
-    //         id: user.ID_PERSONA,
-    //         info: {
-    //             pass_auth: pass
-    //         }
-    //     }
-
-    //     addPassword = await updateDataNew("auth", "id_auth", authInfo);
-    // }
     return personInfo;
 }
 
@@ -393,19 +339,10 @@ const registerClient = async (table, field, data) => {
         let existingAuth;
         let isUser = false;
 
-        // if(data.id && data.id === 0){
-        //     const isRegistered =  await getPersonData(table, 'IDENTIFICACION', data.identity);
-        //     console.log("isregistered: ", isRegistered);
-
-        // }
-
         const existingPerson = await getPersonData(table, 'IDENTIFICACION', data);
-        console.log('ExistingPerson: ', existingPerson);
         if (existingPerson.length > 0) {
             existingUser = await specificData('usuario', 'id_usuario', existingPerson[0].ID_PERSONA);
-            console.log('existingUser: ', existingUser);
             existingAuth = await specificData('auth', 'user_auth', data.identity);
-            console.log('existingAuth: ', existingAuth);
         }
         let result;
         let preReturnResult;
@@ -425,7 +362,6 @@ const registerClient = async (table, field, data) => {
                     AREA_ENTREGA: data.area
                 }
             })
-            console.log("updateOnlyPerson ", updateOnlyPerson);
             return updateOnlyPerson;
 
         } else if (existingAuth && existingAuth.length > 0 && existingAuth[0].PASS_AUTH !== '') {
@@ -436,7 +372,6 @@ const registerClient = async (table, field, data) => {
                 result = await updateInsertPersonData(table, field, data, existingPerson, isUser);
                 idInserted = result.insertId;
                 preReturnResult = await specificData(table, field, idInserted)
-                console.log("preReturnResult ", preReturnResult)
                 returnResult = {
                     id: preReturnResult[0].IDENTIFICACION,
                     name: preReturnResult[0].NOMBRE
@@ -446,7 +381,6 @@ const registerClient = async (table, field, data) => {
                 result = await updateInsertPersonData(table, field, data, existingPerson, isUser);
                 idInserted = result.insertId;
                 preReturnResult = await specificData(table, field, idInserted);
-                console.log("preReturnResult missing only pass: ", preReturnResult)
                 returnResult = {
                     id: existingPerson[0].IDENTIFICACION,
                     name: existingPerson[0].NOMBRE,
@@ -467,9 +401,6 @@ const registerClient = async (table, field, data) => {
                     // area: preReturnResult[0].AREA_ENTREGA,
                 }
             }
-            console.log(result);
-            console.log('preReturnResult: ', preReturnResult)
-            console.log('returnResult: ', returnResult);
             return returnResult;
         }
 
@@ -478,22 +409,12 @@ const registerClient = async (table, field, data) => {
     }
 }
 
-// const queryOrder = async (table, order) => {
-//     return new Promise((resolve, reject) => {
-//         pool.query(`INSERT INTO ${table} (ID_PEDIDO, SUBTOTAL_PEDIDO, FK_ID_PERSONA, FK_ID_ESTADO_PEDIDO, FK_ID_TIPO_ENTREGA, FK_ID_DOMICILIO, FK_ID_ESTADO_PAGO) VALUES (NULL, ?, ?, ?, ?, ?, ?)`, [order.info.SUBTOTAL_PEDIDO, order.info.FK_ID_PERSONA, order.info.FK_ID_ESTADO_PEDIDO, order.info.FK_ID_TIPO_ENTREGA, order.info.FK_ID_DOMICILIO, order.info.FK_ID_ESTADO_PAGO], (error, result) => {
-//             return error ? reject(error) : resolve(result);
-//         });
-//     });
-// }
-
 // Funcion exclusiva para la generacion de pedidos
 const insertOrderProcess = async (finalOrder) => {
 
     let finalOrderComplete;
     let idOrder;
     let resultOrderInsertion;
-
-    console.log("Final order: In mysql", finalOrder);
 
     if ((finalOrder && finalOrder.fromLocal === true) || (finalOrder && finalOrder.client && finalOrder.client?.area == null)) {
         finalOrderComplete = {
@@ -507,11 +428,9 @@ const insertOrderProcess = async (finalOrder) => {
                 FK_ID_ESTADO_PAGO: 2,
             }
         }
-        console.log("finalOrderComplete condition 1: ", finalOrderComplete)
 
     } else if ((finalOrder && finalOrder.client) && (finalOrder.client.area !== null)) {
         const resultDelivery = await specificData("DOMICILIO", "ID_DOMICILIO", finalOrder.client.area);
-        console.log(" ************** RESULT DELIVERY *******************", resultDelivery)
         const sumPrice = resultDelivery[0].COSTO_DOMICILIO + finalOrder.totalPriceOrder;
 
         finalOrderComplete = {
@@ -525,17 +444,13 @@ const insertOrderProcess = async (finalOrder) => {
                 FK_ID_ESTADO_PAGO: 2,
             }
         }
-        console.log("finalOrderComplete condition 2: ", finalOrderComplete)
     } else {
         console.log("Client information is missing or invalid");
         return;
     }
 
-    console.log("finalOrderComplete before insertion: ", finalOrderComplete)
-
     if (finalOrderComplete) {
         resultOrderInsertion = await insertData("pedido", finalOrderComplete);
-        console.log("resulOrderinsertion: ", resultOrderInsertion);
     } else {
         console.log("final order is undefined or it doesn't exist");
         return;
@@ -544,14 +459,9 @@ const insertOrderProcess = async (finalOrder) => {
     if (resultOrderInsertion && resultOrderInsertion.insertId) {
         idOrder = resultOrderInsertion.insertId;
 
-        console.log("resultOrderInsertion: ", resultOrderInsertion);
-        console.log(finalOrder);
-
         // 2 - agregar cada item del carrito
         if (finalOrder.cart && Array.isArray(finalOrder.cart)) {
             const processCartElement = async (element) => {
-                console.log("Processing cart element: ", element);
-
                 const orderDetail = {
                     info: {
                         CANTIDAD_PRODUCTO: element.quantity,
@@ -565,7 +475,6 @@ const insertOrderProcess = async (finalOrder) => {
 
                 try {
                     const orderDetailResult = await insertData("detalle_pedido", orderDetail);
-                    console.log("orderResult: ", orderDetailResult);
 
                     if (!orderDetailResult) {
                         throw new Error("Failed to insert order detail");
@@ -586,7 +495,6 @@ const insertOrderProcess = async (finalOrder) => {
                                 }
                             };
                             const insertAditionsDetail = await insertData("adicion_detalle_pedido", aditionInfo);
-                            console.log("insertAditionsDetail: ", insertAditionsDetail);
                         }));
                     }
 
@@ -599,11 +507,9 @@ const insertOrderProcess = async (finalOrder) => {
                                 }
                             };
                             const insertFlavorDetail = await insertData("sabor_detalle_pedido", flavorInfo);
-                            console.log("insertFlavorDetail: ", insertFlavorDetail);
                         }));
                     }
                 } catch (error) {
-                    console.error("Error creating order: ", error);
                     throw error;
                 }
             };
@@ -623,7 +529,6 @@ const getAllOrders = () => {
             if (error) {
                 reject(error);
             } else {
-                console.log("result allOrders: ", result);
                 resolve(result);
             }
         });

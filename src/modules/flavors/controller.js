@@ -1,4 +1,3 @@
-// import { methods as db } from "../../database/mysql";
 const TABLE = 'SABOR';
 const FIELD = 'ID_SABOR';
 const FIELD2 = 'ESTADO_SAPOR';

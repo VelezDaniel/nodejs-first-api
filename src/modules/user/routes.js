@@ -1,19 +1,7 @@
 import { Router } from "express";
 import { succes, error } from '../../network/response.js'
 import ctrl from './index.js';
-import checkAuth from "../../auth/security.js";
-
 const router = Router();
-
-// // ! no usado
-// const allData = async (req, res, next) => {
-//     try {
-//         const items = await ctrl.allData();
-//         succes(req, res, items, 200);
-//     } catch (err) {
-//         next(err);
-//     }
-// };
 
 const allUsers = async (req, res, next) => {
     try {

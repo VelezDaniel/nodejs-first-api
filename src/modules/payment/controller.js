@@ -39,7 +39,6 @@ export const createOrder = async (req, res) => {
     }
   });
 
-  console.log(response.data);
   return res.json(response.data);
 }
 
@@ -51,9 +50,6 @@ export const captureOrder = async (req, res) => {
       password: config.payment.paypalApiKey
     }
   });
-
-  console.log(response.data)
-
   // return response;
   res.redirect(`${config.frontend.url}/payed`);
 }

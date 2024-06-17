@@ -13,7 +13,6 @@ export default async function authRequired(req, res, next) {
           // succes(req, res, 'Authentication succesfully', 200);
           req.user = result[0];
           // TEStINg
-          console.log('Authentication succesfully');
           next();
       }
   } catch (err) {

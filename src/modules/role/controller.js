@@ -10,17 +10,6 @@ export function methods(dbInyected) {
         db = require('../../database/mysql.js');
     }
 
-    // const allData = () => {
-    //     const results = db.allData(TABLE);
-    //     console.log('results: ', results);
-    //     const roles = results.map(result => ({
-    //         idRole: result.ID_ROL,
-    //         nameRole: result.NOMBRE_ROL
-    //     }));
-    //     return roles;
-    // }
-
-
     const allData = async () => {
         try {
             const results = await db.allData(TABLE);

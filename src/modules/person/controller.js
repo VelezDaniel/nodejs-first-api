@@ -1,4 +1,3 @@
-// import { methods as db } from "../../database/mysql";
 const TABLE = 'PERSONA';
 const FIELD = 'ID_PERSONA';
 const FIELD2 = 'IDENTIFICACION';
@@ -33,7 +32,6 @@ export function methods(dbInyected) {
 
     const specificData = async (identity) => {
         const result = await db.specificData(TABLE, FIELD2, identity);
-        console.log(result);
         if (result.length > 0) {
             const object = result[0];
             return {
@@ -50,7 +48,6 @@ export function methods(dbInyected) {
         } else {
             return new Error('Usuario no encontrado')
         }
-        // return result;
     }
 
     function deleteData(id) {

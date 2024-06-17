@@ -17,7 +17,6 @@ const getOrders = async (req, res) => {
     try {
         const items = await ctrl.getOrders();
 
-        console.log("ITEMS IN ROUTER: ", items);
         if (items) {
             succes(req, res, items, 200);
         } else {
@@ -60,14 +59,7 @@ const addData = async (req, res, next) => {
 const addOrder = async (req, res, next) => {
     let message = "true";
     try {
-        console.log("req.body: ", req.body)
         const items = await ctrl.addOrder(req.body);
-
-        // if (req.body.id == 0) {
-        //     message = 'Data saved succesfully';
-        // } else {
-        //     message = 'Data updated succesfully';
-        // }
         succes(req, res, [message, items], 201);
     } catch (err) {
         next(err);
@@ -76,10 +68,7 @@ const addOrder = async (req, res, next) => {
 
 const updateOrder = async (req, res, next) => {
     try {
-        console.log("req.body: patch order ", req.body)
         const result = await ctrl.updateOrder(req.body);
-        console.log("result of update Order: ", result);
-
         if (result) {
             succes(req, res, true, 201);
         } else {

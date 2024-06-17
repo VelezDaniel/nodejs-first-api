@@ -66,7 +66,6 @@ async function deleteData(req, res,) {
 
 router.get('/', allData);
 router.get('/:id', specificData);
-// router.get('/userBooks', userBooks);
 router.get('/userbooks/:id', userBooks);
 router.post('/', addData);
 router.patch('/', checkAuth(),addData);

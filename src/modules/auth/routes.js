@@ -38,7 +38,6 @@ async function login(req, res) {
         const { status, token, userProfile, message } = await ctrl.login(req.body.identity, req.body.password);
         if (status === 200) {
             res.cookie('token', token, { sameSite: 'None', secure: true });
-            console.log(token, userProfile);
             succes(req, res, userProfile, 200);
         } else {
             error(req, res, message, status);
@@ -50,33 +49,9 @@ async function login(req, res) {
     }
 };
 
-// async function authRequired(req, res, next) {
-//     try {
-//         // ID number of user (not person)
-//         const result = await ctrl.specificDataToken(req.body.id);
-//         // TESTING
-//         console.log(result);
-//         if (!result) {
-//             error(req, res, 'Authorization denied', 401);
-//         } else {
-//             // succes(req, res, 'Authentication succesfully', 200);
-//             req.user = result[0];
-//             // TEStINg
-//             console.log('Authentication succesfully');
-//             next();
-//         }
-//     } catch (err) {
-//         error(req, res, 'catch error - authRequired', 404);
-//         console.log(err);
-//     }
-// }
-
 const profile = async (req, res) => {
     try {
         const result = await ctrl.profile(req.user);
-        // TESTING
-        console.log(result)
-        console.log(req.user);
         succes(req, res, `Session active <Profile> -->>  ${result.name}`, 200);
     } catch (err) {
         console.log(err)
@@ -109,7 +84,6 @@ async function verifyToken(req, res, next) {
     try {
         // const item = await
         const token = req.cookies.token;
-        console.log('token from routes: ' + token);
         if (!token) { return error(req, res, 'Token not found', 401) }
         const result = await ctrl.verifyToken(token);
         succes(req, res, result, 201);

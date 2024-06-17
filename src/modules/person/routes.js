@@ -35,7 +35,6 @@ const addData = async (req, res, next) => {
         } else {
             message = 'Data updated succesfully';
         }
-        console.log("items in addData Back", items)
         succes(req, res, message, 201);
     } catch (err) {
         next(err);
@@ -63,12 +62,7 @@ async function deleteData(req, res) {
 async function registerClient(req, res) {
     try {
         const items = await ctrl.registerClient(req.body);
-        console.log('items: ', items);
-        // const resultItems = {
-        //     user: items.body,
-        // }
         if (items === false) {
-            // res.status(409).json(["El usuario ya existe"]);
             succes(req, res, ["El usuario ya existe"], 409);
         } else {
             succes(req, res, items, 201);

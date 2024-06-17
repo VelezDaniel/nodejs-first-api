@@ -1,4 +1,3 @@
-// import { methods as db } from "../../database/mysql";
 const TABLE = 'DETALLE_PEDIDO';
 const FIELD = 'ID_DETALLE_PEDIDO';
 const FIELD2 = 'ESTADO_SAPOR';
@@ -13,7 +12,6 @@ export function methods(dbInyected) {
     const getOrders = async () => {
         try {
             const orders = await db.getAllOrders();
-            console.log("orders: ", orders);
 
             const ordersMap = new Map();
             orders.forEach(row => {
@@ -113,35 +111,12 @@ export function methods(dbInyected) {
             });
 
             const finalOrders = Array.from(ordersMap.values());
-
-            console.log(JSON.stringify(finalOrders, null, 2));
-
             return finalOrders;
 
         } catch (error) {
             console.log("Error en controller: ", error);
         }
     }
-
-    // const allData = async () => {
-    //     try {
-    //         const results = await db.allData(TABLE);
-    //         if (Array.isArray(results)) {
-    //             const ordersDetails = results.map(result => ({
-    //                 id: result.ID_DETALLE_PEDIDO,
-    //                 quantity: result.CANTIDAD_PRODUCTO,
-    //                 description: result.DESCRIPCION_DETALLE,
-    //                 totalProduct: result.VALOR_TOTAL,
-    //                 idProduct: result.FK_ID_PRODUCTO,
-    //             }));
-    //             return ordersDetails;
-    //         } else {
-    //             return { message: 'No se obtuvieron datos del pedido seleccionada' }
-    //         }
-    //     } catch (error) {
-    //         console.log('error in details orders BK: ', error)
-    //     }
-    // }
 
     const addData = (body) => {
         const data = {

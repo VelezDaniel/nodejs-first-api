@@ -1,9 +1,6 @@
 import { Router } from "express";
 import { succes, error } from '../../network/response.js'
 import ctrl from './index.js';
-// checkAuth sirve para la validacion del token hecho con BEARER
-// import checkAuth from "../../auth/security.js";
-// import { utilities as authIndex } from "../../auth/index.js";
 
 const router = Router();
 
@@ -60,7 +57,6 @@ router.get('/', allData);
 router.get('/:id', specificData);
 router.post('/', addData);
 router.delete('/:id', deleteData);
-// router.delete('/', deleteDataBody);
 
 export default router;
 

@@ -1,6 +1,5 @@
 // import { methods as db } from "../../database/mysql";
 import bcrypt from 'bcrypt';
-import { utilities as authIndex } from "../../auth/index.js";
 import { createAccessToken } from '../../libs/jwt.js';
 import jwt from "jsonwebtoken";
 import config from '../../config.js'
@@ -27,7 +26,6 @@ export function methods(dbInyected) {
     const specificDataToken = async (id) => {
         // return db.specificData(TABLE2, FIELD2, id);
         const data = await db.specificData(TABLE2, FIELD2, id);
-        console.log(data);
 
         if (!data || !data.length === 0 || !data[0].TOKEN) {
             return null;
@@ -114,11 +112,9 @@ export function methods(dbInyected) {
 
             jwt.verify(token, SECRET, async (err, user) => {
                 if (err) {
-                    console.log('Error in verify token: ', err);
                     reject(new Error('Error in verify token: ' + err))
                     return;
                 }
-                console.log('MOSTRANDO USER de verifyToken controller: ', user)
                 // identificacion o IDENTIFICACION e ID_PERSONA
                 // Comprobar existencia en tabla usuario
                 try {
@@ -128,19 +124,6 @@ export function methods(dbInyected) {
                     // Traer informacion de la tabla persona
                     // const infoPerson = await db.specificData('persona', 'id_persona', user.id);
                     const infoPerson = await db.userProfile(user.USER_AUTH);
-                    console.log('infoPerson (controller): ', infoPerson)
-                    // const information = {
-                    //     id: infoPerson.ID_PERSONA,
-                    //     identity: infoPerson.IDENTIFICACION,
-                    //     state: userfound.ESTADO_USUARIO,
-                    //     name: infoPerson.NOMBRE,
-                    //     lastName: infoPerson.APELLIDO,
-                    //     address: infoPerson.DIRECCION,
-                    //     email: infoPerson.Correo,
-                    //     phone: infoPerson.CELULAR,
-                    //     birth: infoPerson.NACIMIENTO
-                    // }
-                    // resolve(information);
                     resolve(infoPerson);
                 } catch (error) {
                     reject(error)
@@ -155,10 +138,6 @@ export function methods(dbInyected) {
         const userFound = await db.userProfile(ident);
 
         if (!userFound) { return null }
-
-        // -- testing
-        console.log('userFound :>> ', userFound);
-
         return userFound;
     }
 
