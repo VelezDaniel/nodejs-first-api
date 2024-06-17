@@ -420,7 +420,7 @@ const insertOrderProcess = async (finalOrder) => {
         finalOrderComplete = {
             info: {
                 SUBTOTAL_PEDIDO: finalOrder.totalPriceOrder,
-                TERMINADO: null,
+                TERMINADO: 0,
                 FK_ID_PERSONA: parseInt(finalOrder.client.id),
                 FK_ID_ESTADO_PEDIDO: 1,
                 FK_ID_TIPO_ENTREGA: 2,
