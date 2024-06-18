@@ -18,6 +18,7 @@ export default {
         database: process.env.DB_NAME || 'helartico',
         dbPort: process.env.DB_PORT || 3306
     },
+    exchangeRateApiKey: '68b14c3a7d4f4b4a7205f0d8',
     payment: {
         paypalApi: 'https://api-m.sandbox.paypal.com',
         paypalApiClient: process.env.PAYPAL_API_CLIENT,

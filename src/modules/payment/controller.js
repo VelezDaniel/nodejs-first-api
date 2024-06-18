@@ -3,14 +3,24 @@ import axios from "axios";
 
 const host = "http://localhost:" + config.app.port + "/api/payment";
 
+const getExchangeRate = async (fromCurrency, toCurrency) => {
+  const response = await axios.get(`https://v6.exchangerate-api.com/v6/${config.exchangeRateApiKey}/latest/${fromCurrency}`);
+  return response.data.conversion_rates[toCurrency];
+};
+
 export const createOrder = async (req, res) => {
+  const price = req.body.totalPriceOrder;
+
+  const exchangeRate = await getExchangeRate('COP', 'USD');
+  const amountInUSD = (price * exchangeRate).toFixed(2);
+
   const order = {
     intent: "CAPTURE",
     purchase_units: [
       {
         amount: {
           currency_code: "USD",
-          value: "3.00"
+          value: amountInUSD,
         }
       }
     ],
